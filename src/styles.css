@@ -1,3 +1,135 @@
-/* You can add global styles to this file, and also import other style files */
-
 @import 'tailwindcss';
+@import 'tailwindcss-primeui';
+@import './fonts.css';
+
+@theme {
+  --font-sans:
+    'Tajawal', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
+  --text-base: 5px;
+}
+
+html {
+  font-size: 1.125rem;
+}
+
+body {
+  background: linear-gradient(135deg, var(--color-surface-300) 0%, var(--color-primary-500) 70%);
+}
+
+@layer base {
+}
+
+@layer components {
+  .p-button {
+    @apply shadow-sm ease-out transition-all;
+
+    &:hover:not([disabled]) {
+      @apply scale-104 shadow-lg ease-in;
+    }
+  }
+
+  hr {
+    @apply border-zinc-300;
+  }
+
+  .p-card {
+    @apply bg-white/80 shadow-md hover:shadow-lg hover:bg-white/95 duration-300 border border-surface;
+  }
+
+  .p-dialog {
+    @apply mx-4;
+
+    .p-dialog-content {
+      @apply flex flex-col;
+    }
+  }
+
+  .p-paginator {
+    @apply shadow-md w-fit border border-white/20 mx-auto mt-4;
+  }
+
+  .p-datatable {
+    .p-overlay-mask {
+      @apply bg-transparent!;
+    }
+
+    .p-datatable-header {
+      @apply bg-white/10 shadow-md shadow-zinc-500;
+    }
+
+    .p-datatable-table-container {
+      @apply shadow-md shadow-zinc-500;
+    }
+
+    .p-datatable-thead {
+      & > tr {
+        & > th {
+          @apply bg-white/30 text-white text-shadow-md;
+
+          svg[data-p-icon] {
+            @apply text-primary-500;
+          }
+        }
+      }
+    }
+
+    .p-datatable-tbody {
+      & > tr {
+        @apply bg-white/10 text-white/90 text-shadow-md;
+      }
+    }
+  }
+  .p-tablist {
+    @apply bg-white/30;
+  }
+}
+
+footer {
+  @apply bg-primary-950;
+
+  position: relative;
+
+  &::before {
+    @apply absolute -top-px inset-0 h-1 content-[''];
+
+    background: linear-gradient(
+      90deg,
+      var(--color-primary-950),
+      var(--color-surface-500),
+      var(--color-primary-950)
+    );
+
+    background-size: 200% auto;
+
+    animation: shimmer 1.5s linear infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 0% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@media print {
+  body {
+    @apply bg-white;
+    @apply bg-none;
+  }
+
+  header,
+  footer,
+  p-toast,
+  p-confirmpopup {
+    @apply hidden;
+  }
+
+  main {
+    @apply p-0;
+    @apply max-w-full;
+  }
+}
