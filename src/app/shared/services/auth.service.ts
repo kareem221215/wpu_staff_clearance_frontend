@@ -11,7 +11,7 @@ export class AuthService {
   #accessToken$ = new BehaviorSubject<string | null>(null);
   #accessTokenPayload$ = new BehaviorSubject<IAccessTokenPayload | null>(null);
 
-  readonly adminRoles = Object.freeze([UserRoleEnum.ADMIN, UserRoleEnum.CENTRAL_AFFAIRS_MANAGER]);
+  readonly adminRoles = Object.freeze([UserRoleEnum.ADMIN, UserRoleEnum.HUMAN_RESOURCES]);
   readonly superAdminRoles = Object.freeze([UserRoleEnum.ADMIN]);
 
   get accessToken() {

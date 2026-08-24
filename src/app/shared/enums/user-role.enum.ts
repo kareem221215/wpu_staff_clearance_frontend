@@ -10,4 +10,5 @@ export enum UserRoleEnum {
   CENTRAL_AFFAIRS_STAFF = 'central_affairs_staff',
   MAIN_BUILDING_STAFF = 'main_building_staff',
   CENTRAL_LIBRARY_MANAGER = 'central_library_manager',
+  HUMAN_RESOURCES = 'human_resources',
 }
