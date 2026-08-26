@@ -1,0 +1,15 @@
+<div class="flex justify-center w-full">
+  <p-card
+    [pt]="{ content: { class: 'flex flex-col justify-center items-center gap-8' } }"
+    class="w-fit"
+  >
+    <span class="font-medium text-2xl text-surface-700 text-shadow-xs">
+      الرجاء تسجيل الدخول للوصول الى النظام
+    </span>
+
+    <a pButton rounded [href]="getAuthHref()" class="w-fit">
+      <svg data-p-icon="sign-in"></svg>
+      <span class="hidden sm:block">تسجيل الدخول</span>
+    </a>
+  </p-card>
+</div>

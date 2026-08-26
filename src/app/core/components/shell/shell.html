@@ -1,0 +1,20 @@
+<div class="flex flex-col gap-4">
+  <div class="flex flex-col sm:flex-row gap-2 p-4 shadow-md border border-white/20">
+    <a pButton routerLink="/students" routerLinkActive="bg-surface-500/60 border-primary/50">
+      <svg data-p-icon="graduation-cap"></svg>
+      <span>الطلاب</span>
+    </a>
+    <a pButton routerLink="/requests" routerLinkActive="bg-surface-500/60 border-primary/50">
+      <svg data-p-icon="list"></svg>
+      <span>الطلبات</span>
+    </a>
+    <a pButton routerLink="/stats" routerLinkActive="bg-surface-500/60 border-primary/50">
+      <svg data-p-icon="users"></svg>
+      <span>احصائيات</span>
+    </a>
+
+    <ng-container *ngTemplateOutlet="toolbarTpl()" />
+  </div>
+
+  <router-outlet />
+</div>

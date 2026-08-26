@@ -1,0 +1,152 @@
+<!-- <ng-template #toolbarTpl>
+  @if (isAdmin()) {
+    <p-select
+      (onChange)="onSearch('collegeId', $event.value)"
+      [(ngModel)]="collegeId"
+      [options]="colleges()"
+      optionLabel="name"
+      optionValue="collegeId"
+      placeholder="اختر كلية"
+      showClear
+    />
+  }
+
+  <p-iconfield>
+    <p-inputicon>
+      <svg data-p-icon="graduation-cap"></svg>
+    </p-inputicon>
+    <p-autocomplete
+      (completeMethod)="onSearchStaff($event)"
+      (onClear)="onSearch('staffId')"
+      (onSelect)="onSearch('staffId', $event.value.staffId)"
+      [(ngModel)]="staff"
+      [suggestions]="staffs()"
+      completeOnFocus
+      dropdown
+      emptyMessage="لم يتم العثور على أي طالب(ة)"
+      fluid
+      forceSelection
+      optionLabel="name"
+      placeholder="مثال: محمد رئيف الرفاعي"
+      showClear
+      inputId="staff-search-input"
+    />
+  </p-iconfield>
+</ng-template> -->
+
+<p-table
+  (onLazyLoad)="onLazyLoad($event)"
+  [first]="skip()"
+  [loading]="loading()"
+  [rows]="pageSize"
+  [totalRecords]="requests().total"
+  [value]="requests().data"
+  class="min-h-166"
+  dataKey="requestId"
+  lazy
+  paginator
+>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="7" class="text-center">لم يتم العثور على أي طلب.</td>
+    </tr>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th class="text-nowrap">
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="hashtag"></svg>
+        </div>
+      </th>
+
+      <th>
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="graduation-cap"></svg>
+          الطالب(ة)
+        </div>
+      </th>
+
+      <th>
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="building"></svg>
+          الكلية
+        </div>
+      </th>
+
+      <th class="text-nowrap">
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="exclamation-triangle"></svg>
+          عدد الموافقات
+        </div>
+      </th>
+
+      <th class="text-center">
+        <svg data-p-icon="bolt"></svg>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-request>
+    <tr [ngClass]="{ 'bg-red-500/10': needsAction(request) }">
+      <td class="text-nowrap text-center">
+        {{ request.requestId }}
+      </td>
+
+      <td class="text-nowrap">
+        <div class="relative flex items-center">
+          @if (needsAction(request)) {
+            <span class="ps-4">{{ request.staffName }}</span>
+            <span
+              class="absolute inline-flex w-1.5 h-1.5 animate-ping rounded-full bg-red-600 opacity-75"
+            ></span>
+          } @else {
+            <span>{{ request.staffName }}</span>
+          }
+        </div>
+      </td>
+
+      <td class="text-nowrap">
+        {{ request.collegeName }}
+      </td>
+
+      <td class="font-mono text-nowrap text-center">
+        {{ request.approvalCount }}
+      </td>
+
+      <!-- <td class="text-nowrap space-x-2">
+        <button (click)="openRequestViewDialog(request)" severity="secondary" size="small" pButton>
+          <svg data-p-icon="eye"></svg>
+          عرض
+        </button>
+
+        @if (needsAction(request)) {
+          <button (click)="approve($event, request)" severity="success" size="small" pButton>
+            <svg data-p-icon="check-circle"></svg>
+            موافقة
+          </button>
+
+          <button pButton (click)="reject(request)" severity="danger" size="small">
+            <svg data-p-icon="times-circle"></svg>
+            رفض
+          </button>
+        } @else if (canPrint()) {
+          <a pButton [routerLink]="['/print', request.requestId]" size="small">
+            <svg data-p-icon="print"></svg>
+            طباعة
+          </a>
+        }
+
+        @if (isSuperAdmin()) { -->
+      <!-- <p-button
+            (click)="delete($event, request)"
+            data-p-icon="trash"
+            label="حذف"
+            severity="danger"
+            size="small"
+          /> -->
+      <!-- }
+      </td> -->
+    </tr>
+  </ng-template>
+</p-table>
