@@ -8,7 +8,7 @@ import { Building } from '@primeicons/angular/building';
 import { CheckCircle } from '@primeicons/angular/check-circle';
 import { ExclamationTriangle } from '@primeicons/angular/exclamation-triangle';
 import { Eye } from '@primeicons/angular/eye';
-import { GraduationCap } from '@primeicons/angular/graduation-cap';
+import { User } from '@primeicons/angular/user';
 import { Hashtag } from '@primeicons/angular/hashtag';
 import { Print } from '@primeicons/angular/print';
 import { TimesCircle } from '@primeicons/angular/times-circle';
@@ -42,7 +42,7 @@ import { ShellService } from '../../services/shell.service';
     ExclamationTriangle,
     Eye,
     FormsModule,
-    GraduationCap,
+    User,
     Hashtag,
     IconField,
     InputIcon,
