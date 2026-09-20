@@ -13,6 +13,7 @@ import { STAFF_CLEARANCE_APIS_SERVICE_URL_TOKEN } from './shared/tokens/staff-cl
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { cacheInterceptor } from './shared/interceptors/cache.interceptor';
 import { jwtInterceptor } from './shared/interceptors/jwt.interceptor';
+import { mockInterceptor } from './shared/interceptors/mock.interceptor';
 import { accessTokenInitilizer } from './shared/initilizers/access-token.initilizer';
 
 const MyPreset = definePreset(Aura, {
@@ -132,7 +133,7 @@ export const appConfig: ApplicationConfig = {
     ConfirmationService,
     DialogService,
     SelectButtonModule,
-    provideHttpClient(withInterceptors([jwtInterceptor, cacheInterceptor])),
+    provideHttpClient(withInterceptors([mockInterceptor, jwtInterceptor, cacheInterceptor])),
     accessTokenInitilizer,
     {
       provide: GATE_APIS_SERVICE_URL_TOKEN,

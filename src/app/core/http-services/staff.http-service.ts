@@ -14,6 +14,7 @@ export class StaffHttpService {
   readonly #httpService = inject(HttpService);
 
   readonly #baseUrl = `${this.#docsApisServiceUrl}/students`;
+  readonly #managersUrl = `${this.#docsApisServiceUrl}/managers`;
 
   fetch$(payload: IHttpFetchPayload & { collegeIds?: number[] }) {
     let params = this.#httpService.fetchPayloadToParams(payload);
@@ -23,6 +24,19 @@ export class StaffHttpService {
     }
 
     return this.#httpClient.get<IHttpListResponse<IStaff>>(this.#baseUrl, {
+      params,
+      context: new HttpContext().set(CACHE_HTTP_CONTEXT_TOKEN, true),
+    });
+  }
+
+  fetchManagers$(payload: IHttpFetchPayload & { collegeIds?: number[] }) {
+    let params = this.#httpService.fetchPayloadToParams(payload);
+
+    if (payload.collegeIds) {
+      params = params.append('collegeIds', payload.collegeIds.join(','));
+    }
+
+    return this.#httpClient.get<IHttpListResponse<IStaff>>(this.#managersUrl, {
       params,
       context: new HttpContext().set(CACHE_HTTP_CONTEXT_TOKEN, true),
     });

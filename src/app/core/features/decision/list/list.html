@@ -1,0 +1,89 @@
+<!-- <ng-template #toolbarTpl>
+  <app-college-input [field]="searchForm.collegeId" (onChange)="onCollegeSelect($event)" />
+
+  @if (isAffairsManager()) {
+    <button pButton (click)="openFormDialog()">
+      <svg data-p-icon="plus"></svg>
+      قرار جديد
+    </button>
+  }
+</ng-template> -->
+
+<p-table
+  (onLazyLoad)="onLazyLoad($event)"
+  [first]="searchModel().skip"
+  [loading]="loading()"
+  [rows]="pageSize"
+  [totalRecords]="decisions().total"
+  [value]="decisions().data"
+  class="min-h-166"
+  dataKey="requestId"
+  lazy
+  paginator
+>
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="7" class="text-center">لم يتم العثور على أي قرار.</td>
+    </tr>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th class="text-nowrap">
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="hashtag"></svg>
+        </div>
+      </th>
+
+      <th>
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="building"></svg>
+          الكلية
+        </div>
+      </th>
+
+      <th>
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="calendar"></svg>
+          تاريخ الانشاء
+        </div>
+      </th>
+
+      <th>
+        <svg data-p-icon="bolt"></svg>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-decision let-expanded="expanded">
+    <tr>
+      <td class="text-nowrap text-center">
+        {{ decision.decisionId }}
+      </td>
+
+      <td class="text-nowrap">
+        <div class="relative flex items-center">
+          {{ collegeMap().get(decision.collegeId) }}
+        </div>
+      </td>
+
+      <td class="text-nowrap font-mono">
+        {{ decision.createdAt.toLocaleDateString() }} -
+        {{ decision.createdAt.toLocaleTimeString() }}
+      </td>
+
+      <td>
+        <button
+          (click)="openViewDialog(decision.decisionId)"
+          pButton
+          severity="secondary"
+          size="small"
+          type="button"
+        >
+          <svg data-p-icon="eye"></svg>
+          عرض الطلبات
+        </button>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

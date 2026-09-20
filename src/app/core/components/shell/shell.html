@@ -1,19 +1,34 @@
 <div class="flex flex-col gap-4">
-  <div class="flex flex-col sm:flex-row gap-2 p-4 shadow-md border border-white/20">
-    <a pButton routerLink="/students" routerLinkActive="bg-surface-500/60 border-primary/50">
-      <svg data-p-icon="graduation-cap"></svg>
-      <span>الطلاب</span>
-    </a>
-    <a pButton routerLink="/requests" routerLinkActive="bg-surface-500/60 border-primary/50">
-      <svg data-p-icon="list"></svg>
-      <span>الطلبات</span>
-    </a>
-    <a pButton routerLink="/stats" routerLinkActive="bg-surface-500/60 border-primary/50">
-      <svg data-p-icon="users"></svg>
-      <span>احصائيات</span>
-    </a>
+  <div
+    class="flex sm:flex-row flex-col flex-wrap gap-2 p-4 shadow-md border border-white/20 justify-between"
+  >
+    <div class="flex flex-col sm:flex-row flex-wrap gap-2">
+      <a pButton routerLink="/students" routerLinkActive="bg-surface-500/60 border-primary/50">
+        <svg data-p-icon="graduation-cap"></svg>
+        <span>طلب براءة ذمة </span>
+      </a>
 
-    <ng-container *ngTemplateOutlet="toolbarTpl()" />
+      <a pButton routerLink="/request/list" routerLinkActive="bg-surface-500/60 border-primary/50">
+        <svg data-p-icon="list"></svg>
+        <span>الطلبات</span>
+      </a>
+
+      @if (canSeeDecisions()) {
+        <a pButton routerLink="/decisions" routerLinkActive="bg-surface-500/60 border-primary/50">
+          <svg data-p-icon="compress"></svg>
+          <span>قرارات التخرج</span>
+        </a>
+      }
+
+      <a pButton routerLink="/stats" routerLinkActive="bg-surface-500/60 border-primary/50">
+        <svg data-p-icon="users"></svg>
+        <span>احصائيات</span>
+      </a>
+    </div>
+
+    <div class="flex gap-2 flex-col sm:flex-row flex-wrap">
+      <ng-container *ngTemplateOutlet="toolbarTpl()" />
+    </div>
   </div>
 
   <router-outlet />

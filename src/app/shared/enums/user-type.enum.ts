@@ -1,6 +1,7 @@
 export enum UserTypeEnum {
   ADMIN = 'admin',
+  DOCTOR = 'doctor',
+  FACULTY_MEMBER = 'faculty_member',
   STAFF = 'staff',
-  DIRECT_MANAGERS = 'direct_managers',
-  MANAGERS = 'managers',
+  STUDENT = 'student',
 }

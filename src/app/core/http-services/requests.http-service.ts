@@ -7,6 +7,8 @@ import { STAFF_CLEARANCE_APIS_SERVICE_URL_TOKEN } from '../../shared/tokens/staf
 import { IRequestApproval } from '../interfaces/request-approval.interface';
 import { IRequest } from '../interfaces/request.interface';
 import { map } from 'rxjs';
+import { RequestActionTypeEnum } from '../enums/request-action-type.enum';
+
 import { IHttpResponse } from '../../shared/interfaces/http-response.interface';
 
 interface IRequestsHttpFetchPayload {
@@ -66,8 +68,14 @@ export class RequestsHttpService {
     return this.#httpClient.post<void>(url, { approved, note });
   }
 
-  create$(data: { staffId: number }) {
-    return this.#httpClient.post<void>(this.#baseUrl, data);
+  takeAction$(requestId: number, type: RequestActionTypeEnum, note: string | null = null) {
+    const url = [this.#baseUrl, requestId, 'actions'].join('/');
+
+    return this.#httpClient.post<void>(url, { type, note });
+  }
+
+  create$(staffId: number) {
+    return this.#httpClient.post<void>(this.#baseUrl, { staffId });
   }
 
   #handleRequestsHttpFetchPayload(params: HttpParams, payload: IRequestsHttpFetchPayload) {

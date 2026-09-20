@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { canSeeDecisionsGuard } from './shared/guards/can-see-decisions.guard';
 import { authGuard } from './shared/guards/auth.guard';
 
 export const routes: Routes = [
@@ -14,18 +15,40 @@ export const routes: Routes = [
           import('./core/components/root-redirect/root-redirect').then((c) => c.RootRedirect),
       },
       {
-        path: 'clearance',
-        pathMatch: 'full',
+        path: 'students',
+        loadComponent: () => import('./core/features/staff/list/list').then((c) => c.StaffList),
+      },
+      {
+        path: 'decisions',
+        canActivate: [canSeeDecisionsGuard],
         loadComponent: () =>
-          import('./core/components/clearance_page/clearance_page').then((c) => c.ClearancePage),
+          import('./core/features/decision/list/list').then((c) => c.DecisionList),
+      },
+      {
+        path: 'request',
+        children: [
+          {
+            path: 'list',
+            loadComponent: () =>
+              import('./core/features/request/list/list').then((c) => c.RequestList),
+          },
+          {
+            path: 'print/:requestId',
+            loadComponent: () =>
+              import('./core/features/request/print/print').then((c) => c.RequestPrint),
+          },
+        ],
+      },
+      {
+        path: 'stats',
+        loadComponent: () => import('./core/features/stats/stats').then((c) => c.Stats),
       },
     ],
   },
-
   {
     path: 'login',
     canActivate: [authGuard(false)],
-    loadComponent: () => import('./core/components/login/login').then((c) => c.Login),
+    loadComponent: () => import('./core/features/login/login').then((c) => c.Login),
   },
   {
     path: '**',

@@ -1,0 +1,35 @@
+<!-- Header -->
+<div class="flex flex-col gap-4 px-6">
+  <div class="flex items-center gap-4 justify-between">
+    <div class="flex gap-4 items-center">
+      <h2 class="text-xl font-bold leading-snug capitalize">{{ title() }}</h2>
+      <ng-container *ngTemplateOutlet="headerTpl()" />
+    </div>
+    <button
+      (click)="close.emit()"
+      class="aspect-square"
+      outlined
+      pButton
+      severity="secondary"
+      size="small"
+      type="button"
+    >
+      <svg data-p-icon="times"></svg>
+    </button>
+  </div>
+
+  <hr />
+</div>
+
+<div class="flex flex-col py-4 px-6 overflow-auto gap-6">
+  <ng-container *ngTemplateOutlet="contentTpl()" />
+</div>
+
+@if (footerTpl()) {
+  <div class="flex flex-col gap-4 px-6">
+    <hr />
+    <div class="flex gap-2">
+      <ng-container *ngTemplateOutlet="footerTpl()" />
+    </div>
+  </div>
+}

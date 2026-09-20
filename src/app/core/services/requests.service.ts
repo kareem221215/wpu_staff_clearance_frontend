@@ -2,16 +2,14 @@ import { inject, Injectable } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { UserRoleEnum } from '../../shared/enums/user-role.enum';
 import { AuthService } from '../../shared/services/auth.service';
-// import { RequestReject } from '../components/request-reject/request-reject';
+import { RequestReject } from '../features/request/reject/reject';
+import { RequestActionTypeEnum } from '../enums/request-action-type.enum';
 import { RequestsHttpService } from '../http-services/requests.http-service';
 import { IRequest } from '../interfaces/request.interface';
 import { IStaff } from '../interfaces/staff.interface';
 import { ConfirmService } from './confirm.service';
 import { ToastService } from './toast.service';
-
-const HEADER_TEXT = 'الطلاب الاعزاء، نذكركم بوجوب استكمال الوثائق التالية في مدة لاتتجاوز الاسبوع.';
-const FOOTER_TEXT = `مديرية شؤون الطلاب المركزية - الجامعة الوطنية الخاصة
-شكراَ لتعاونكم`;
+import { RequestView } from '../features/request/view/view';
 
 @Injectable({ providedIn: 'root' })
 export class RequestsService {
@@ -27,47 +25,68 @@ export class RequestsService {
       .then(
         () =>
           new Promise<void>((resolve) => {
-            this.#requestsHttpService.approve$(request.requestId).subscribe(() => {
-              this.#toastService.success(`تمت الموافقة على الطلب #${request.requestId} بنجاح`);
+            this.#requestsHttpService
+              .takeAction$(request.requestId, RequestActionTypeEnum.APPROVE)
+              .subscribe(() => {
+                this.#toastService.success(`تمت الموافقة على الطلب #${request.requestId} بنجاح`);
 
-              resolve();
-            });
+                resolve();
+              });
           }),
       );
   }
 
-  // async reject(request: IRequest) {
-  //   return new Promise<boolean>((resolve) => {
-  //     const ref = this.#dialogService.open(RequestReject, {
-  //       closeOnEscape: true,
-  //       dismissableMask: true,
-  //       draggable: false,
-  //       resizable: false,
-  //       showHeader: false,
-  //       closable: true,
-  //       inputValues: { request },
-  //       width: '30rem',
-  //     })!;
+  async archive(evt: MouseEvent, request: IRequest) {
+    return this.#confirmService
+      .confirm(evt, `هل أنت متأكد من أرشفة الطلب #${request.requestId}؟`)
+      .then(
+        () =>
+          new Promise<void>((resolve) => {
+            this.#requestsHttpService
+              .takeAction$(request.requestId, RequestActionTypeEnum.ARCHIVE)
+              .subscribe(() => {
+                this.#toastService.success(`تمت أرشفة الطلب #${request.requestId} بنجاح`);
 
-  //     ref.onClose.subscribe((note?: string) => {
-  //       if (note === undefined || note === '') {
-  //         resolve(false);
+                resolve();
+              });
+          }),
+      );
+  }
 
-  //         return;
-  //       }
-
-  //       this.#requestsHttpService.approve$(request.requestId, false, note).subscribe(() => {
-  //         this.#toastService.success(`تم رفض الطلب #${request.requestId} بنجاح`);
-
-  //         resolve(true);
-  //       });
-  //     });
-  //   });
-  // }
-
-  openViewDialog(request: IRequest) {
+  async reject(request: IRequest) {
     return new Promise<boolean>((resolve) => {
-      const ref = this.#dialogService.open(Request, {
+      const ref = this.#dialogService.open(RequestReject, {
+        closeOnEscape: true,
+        dismissableMask: true,
+        draggable: false,
+        resizable: false,
+        showHeader: false,
+        closable: true,
+        inputValues: { request },
+        width: '30rem',
+      })!;
+
+      ref.onClose.subscribe((note?: string) => {
+        if (note === undefined || note === '') {
+          resolve(false);
+
+          return;
+        }
+
+        this.#requestsHttpService
+          .takeAction$(request.requestId, RequestActionTypeEnum.REJECT, note)
+          .subscribe(() => {
+            this.#toastService.success(`تم رفض الطلب #${request.requestId} بنجاح`);
+
+            resolve(true);
+          });
+      });
+    });
+  }
+
+  openViewDialog(requestId: number) {
+    return new Promise<boolean>((resolve) => {
+      const ref = this.#dialogService.open(RequestView, {
         closeOnEscape: true,
         dismissableMask: true,
         draggable: false,
@@ -75,7 +94,7 @@ export class RequestsService {
         showHeader: false,
         width: '48rem',
         closable: true,
-        inputValues: { request },
+        inputValues: { requestId },
       })!;
 
       ref.onClose.subscribe((payload: boolean) => {
@@ -84,33 +103,70 @@ export class RequestsService {
     });
   }
 
-  delete(evt: MouseEvent, request: IRequest) {
-    return new Promise<void>((resolve) => {
-      this.#confirmService
-        .confirm(evt, `هل تريد بالفعل حذف الطلب #${request.requestId} نهائياً؟`)
-        .then(() => {
-          // this.#requestsHttpService.delete$(request.requestId).subscribe(() => {
-          //   this.#toastService.success(`تم حذف الطلب #${request.requestId} بنجاح!`);
-          //   resolve();
-          // });
-        });
-    });
+  canApprove(request: IRequest) {
+    return this.#isNext(request) || (this.#isRejected(request) && !this.#isApproved(request));
   }
 
-  canTakeAction(request: IRequest) {
+  canReject(request: IRequest) {
+    return this.#isNext(request);
+  }
+
+  canArchive(request: IRequest) {
     return (
-      request.nextApproverRole &&
-      !request.completed &&
-      this.#authService.accessTokenPayload!.roles.includes(request.nextApproverRole)
+      this.isCompleted(request) &&
+      request.actions.every(({ type }) => type !== RequestActionTypeEnum.ARCHIVE) &&
+      this.#authService.hasRoles([UserRoleEnum.HUMAN_RESOURCES])
     );
   }
 
-  // canCreate() {
-  //   return this.#authService.accessTokenPayload!.roles.includes(UserRoleEnum.s);
-  // }
-  //to-do all staff can create
+  canCreate() {
+    return this.#authService.hasRoles([UserRoleEnum.IT_STAFF]);
+  }
+  //TO-DO change user role to all staffs
 
-  canPrint() {
-    return this.#authService.accessTokenPayload!.roles.includes(UserRoleEnum.HUMAN_RESOURCES);
+  canPrint(request: IRequest) {
+    return this.isCompleted(request) && this.#authService.hasRoles([UserRoleEnum.HUMAN_RESOURCES]);
+  }
+
+  canView(request: IRequest) {
+    return (
+      this.isCompleted(request) ||
+      this.#isNext(request) ||
+      this.#isApproved(request) ||
+      this.#isRejected(request)
+    );
+  }
+
+  isCompleted(request: IRequest) {
+    return (
+      request.nextActionRole === null &&
+      this.#getRejectionRoles(request).every((role) =>
+        this.#getApprovalRoles(request).includes(role),
+      )
+    );
+  }
+
+  #isRejected(request: IRequest) {
+    return this.#authService.hasRoles(this.#getRejectionRoles(request));
+  }
+
+  #isApproved(request: IRequest) {
+    return this.#authService.hasRoles(this.#getApprovalRoles(request));
+  }
+
+  #isNext({ nextActionRole }: IRequest) {
+    return nextActionRole && this.#authService.hasRoles([nextActionRole]);
+  }
+
+  #getApprovalRoles(request: IRequest) {
+    return request.actions
+      .filter((action) => action.type === RequestActionTypeEnum.APPROVE)
+      .map(({ role }) => role);
+  }
+
+  #getRejectionRoles(request: IRequest) {
+    return request.actions
+      .filter((action) => action.type === RequestActionTypeEnum.REJECT)
+      .map(({ role }) => role);
   }
 }

@@ -1,0 +1,142 @@
+<app-dialog-container [title]="'الطلب #' + requestId()" (close)="close()">
+  <ng-template #headerTpl>
+    @if (loading()) {
+      <p-message severity="info">
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="exclamation-triangle"></svg>
+          <span>جاري التحميل</span>
+        </div>
+      </p-message>
+    } @else if (isCompleted(request()!)) {
+      <p-message severity="success">
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="check-circle"></svg>
+          <span>تم اتخاذ جميع الاجراءات</span>
+        </div>
+      </p-message>
+    } @else {
+      <p-message severity="warn" []>
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="exclamation-triangle"></svg>
+          <span>بانتظار استكمال الإجراءات </span>
+        </div>
+      </p-message>
+    }
+  </ng-template>
+
+  <ng-template #contentTpl>
+    @if (loading()) {
+      <div class="flex justify-center p-4">
+        <svg data-p-icon="spinner" [spin]="true" [size]="40"></svg>
+      </div>
+    } @else {
+      <div class="flex flex-col gap-1">
+        <span class="font-medium text-shadow-xs text-primary">تفاصيل الطالب(ة):</span>
+        @if (staff()) {
+          <div
+            class="shadow-md border border-zinc-200 p-2 px-4 rounded-lg grid lg:grid-cols-3 gap-2 justify-between"
+          >
+            <div class="flex items-center gap-1">
+              <svg data-p-icon="graduation-cap" class="text-primary-800"></svg>
+              <span>الاسم:</span>
+              <span class="font-medium">{{ staff()!.name }}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <svg data-p-icon="tags" class="text-primary-800"></svg>
+              <span>الرقم الجامعي:</span>
+              <span class="font-medium">{{ staff()!.uid }}</span>
+            </div>
+            <div class="flex items-center gap-1">
+              <svg data-p-icon="building" class="text-primary-800"></svg>
+              <span>الكلية:</span>
+              <span class="font-medium">{{ staff()!.collegeName }}</span>
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1">
+        <span class="font-medium text-primary text-shadow-xs">الاجراءات:</span>
+        <div class="flex flex-col gap-2">
+          @for (action of actions(); track $index) {
+            <div
+              class="gap-2 shadow-md border border-zinc-200 py-2 px-4 rounded-lg grid lg:grid-cols-2"
+              [ngClass]="{
+                'bg-green-600/10': isApproval(action),
+                'bg-red-600/10': isRejection(action),
+              }"
+            >
+              <div class="flex gap-2 items-center">
+                <svg data-p-icon="calendar" class="text-primary-800"></svg>
+                <span>الوقت:</span>
+                <span class="font-medium">
+                  {{ action.takenAt.toLocaleDateString() }} -
+                  {{ action.takenAt.toLocaleTimeString() }}
+                </span>
+              </div>
+
+              <div class="flex gap-2 items-center drop-shadow-md">
+                <svg data-p-icon="caret-left" class="text-surface-200 drop-shadow-xs"></svg>
+                <span>الإجراء:</span>
+                @if (isApproval(action)) {
+                  <span class="font-medium">تمت الموافقة</span>
+                  <svg data-p-icon="check-circle" class="text-green-800"></svg>
+                } @else if (isRejection(action)) {
+                  <span class="font-medium">تم الرفض</span>
+                  <svg data-p-icon="times-circle" class="text-red-500"></svg>
+                } @else {
+                  <span class="font-medium">تمت الأرشفة</span>
+                  <svg data-p-icon="folder"></svg>
+                }
+              </div>
+
+              @if (action.note) {
+                <div class="flex gap-2 items-center">
+                  <svg data-p-icon="note-sticky" class="text-primary-800"></svg>
+                  ملاحظات: {{ action.note }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </ng-template>
+
+  @if (!loading() && (isPermittedToTakeAction(request()!) || canPrint(request()!))) {
+    <ng-template #footerTpl>
+      @if (canApprove(request()!)) {
+        <button pButton type="button" (click)="approve($event)" severity="success">
+          <svg data-p-icon="check-circle"></svg>
+          موافقة
+        </button>
+      }
+
+      @if (canReject(request()!)) {
+        <button pButton type="button" (click)="reject()" severity="danger">
+          <svg data-p-icon="times-circle"></svg>
+          رفض
+        </button>
+      }
+
+      @if (canArchive(request()!)) {
+        <button pButton type="button" (click)="archive($event)" severity="secondary">
+          <svg data-p-icon="folder"></svg>
+          أرشفة
+        </button>
+      }
+
+      @if (canPrint(request()!)) {
+        <a
+          pButton
+          role="button"
+          [routerLink]="['request/print', request()!.requestId]"
+          (click)="close()"
+        >
+          <svg data-p-icon="print"></svg>
+          طباعة
+        </a>
+      }
+    </ng-template>
+  }
+</app-dialog-container>

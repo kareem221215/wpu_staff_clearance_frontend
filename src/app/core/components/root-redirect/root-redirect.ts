@@ -1,11 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { Spinner } from '@primeicons/angular/spinner';
 import { AuthService } from '../../../shared/services/auth.service';
-import { UserRoleEnum } from '../../../shared/enums/user-role.enum';
 import { Router } from '@angular/router';
-
+import { UserTypeEnum } from '../../../shared/enums/user-type.enum';
 @Component({
-  selector: 'app-root-redirect',
   templateUrl: './root-redirect.html',
   imports: [Spinner],
 })
@@ -14,10 +12,8 @@ export class RootRedirect implements OnInit {
   readonly #router = inject(Router);
 
   ngOnInit(): void {
-    const isHR = this.#authService.accessTokenPayload?.roles.includes(
-      UserRoleEnum.HUMAN_RESOURCES,
-    );
+    const isStaff = this.#authService.accessTokenPayload?.type.includes(UserTypeEnum.STAFF);
 
-    this.#router.navigate([isHR ? '/requests' : '/clearance'], { replaceUrl: true });
+    this.#router.navigate([isStaff ? '/students' : 'request/list'], { replaceUrl: true });
   }
 }

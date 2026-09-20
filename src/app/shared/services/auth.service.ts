@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
 import { BehaviorSubject, map, switchMap } from 'rxjs';
 import { UserRoleEnum } from '../enums/user-role.enum';
+import { UserTypeEnum } from '../enums/user-type.enum';
 import { IAccessTokenPayload } from '../interfaces/access-token-payload.interface';
 
 const accessTokenStorageToken = '$_WPU_ACCESS_TOKEN_$';
@@ -43,6 +44,16 @@ export class AuthService {
       map((accessTokenPayload) => {
         return this.#hasRoles(accessTokenPayload, this.superAdminRoles);
       }),
+    );
+  }
+
+  get isStaff() {
+    return this.#accessTokenPayload$.value?.type === UserTypeEnum.STAFF;
+  }
+
+  get isStaff$() {
+    return this.#accessTokenPayload$.pipe(
+      map((payload) => payload?.type === UserTypeEnum.STAFF),
     );
   }
 

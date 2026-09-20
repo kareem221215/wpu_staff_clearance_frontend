@@ -1,0 +1,131 @@
+@reference "../../../../../styles.css";
+
+.page {
+  @apply w-[210mm];
+  @apply min-h-[297mm];
+  @apply py-[15mm] px-[20mm];
+  @apply mx-auto bg-white text-black text-base;
+}
+
+.header {
+  @apply flex justify-between items-center mb-2;
+}
+
+.header-right {
+  @apply flex flex-col items-center gap-1;
+}
+
+.logo {
+  @apply w-19 h-19 object-contain;
+}
+
+.university-name {
+  @apply font-bold text-sm;
+}
+
+.header-center {
+  @apply text-center;
+}
+
+.form-title {
+  @apply font-bold text-[#1a3a6e] text-2xl;
+}
+
+.header-left {
+  @apply text-left leading-relaxed text-sm;
+}
+
+.divider {
+  @apply border-0 border-t-2 border-[#1a3a6e] my-2;
+}
+
+.info-table {
+  @apply w-full border-collapse mb-3 text-sm;
+}
+
+.info-table th,
+.info-table td {
+  @apply px-2 py-1.25 border border-[#ccc];
+}
+
+.info-table th {
+  @apply bg-[#eef2fb] font-bold whitespace-nowrap w-[15%];
+}
+
+.info-table td {
+  @apply w-[35%];
+}
+
+.clearance-table {
+  @apply w-full border-collapse mb-5 text-sm;
+}
+
+.clearance-table th,
+.clearance-table td {
+  @apply px-2 py-1.5 text-center;
+  @apply border-[1.5px] border-[#333];
+}
+
+.clearance-table thead tr {
+  @apply bg-[#1a3a6e] text-white;
+}
+
+.clearance-table tbody tr:nth-child(even) {
+  @apply bg-[#f5f7fc];
+}
+
+.col-num {
+  @apply w-[5%];
+}
+
+.col-dept {
+  @apply w-1/4 text-right;
+}
+
+.col-staff {
+  @apply w-1/5;
+}
+
+.request-date {
+  @apply text-xs;
+}
+
+.col-date {
+  @apply w-[15%];
+}
+
+.col-status {
+  @apply w-[35%];
+}
+
+.approved {
+  @apply text-green-800 font-bold;
+}
+
+.empty-row {
+  @apply text-center text-[#888] p-5;
+}
+
+.footer {
+  @apply flex justify-between items-end mt-8;
+}
+
+.footer-block {
+  @apply text-center text-sm;
+}
+
+.loading {
+  @apply flex justify-center items-center h-screen text-[#555] text-xl;
+}
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  .page {
+    padding: 10mm;
+    @apply w-full m-0 min-h-0;
+  }
+}

@@ -1,0 +1,76 @@
+<div class="flex flex-col xl:flex-row gap-2 text-white font-medium text-shadow-md justify-stretch">
+  <div class="flex gap-2 justify-stretch w-full">
+    <a class="stats-card" routerLink="/students">
+      <svg data-p-icon="graduation-cap" [size]="40"></svg>
+      <ng-container
+        /* *ngTemplateOutlet="numTpl; context: { $implicit: stats().studentCount, label: 'الطلاب' }" */
+      />
+    </a>
+    <a class="stats-card" routerLink="/request/list">
+      <svg data-p-icon="file" [size]="40"></svg>
+      <ng-container
+        *ngTemplateOutlet="
+          numTpl;
+          context: { $implicit: stats().requestCount, label: 'اجمالي الطلبات' }
+        "
+      />
+    </a>
+  </div>
+  <div class="flex gap-2 justify-stretch w-full">
+    <a class="stats-card" routerLink="/request/list" [queryParams]="{ archived: true }">
+      <svg data-p-icon="ban" [size]="40"></svg>
+
+      <ng-container
+        *ngTemplateOutlet="
+          numTpl;
+          context: {
+            $implicit: stats().archivedRequestCount,
+            label: 'الطلبات المؤرشفة',
+          }
+        "
+      />
+    </a>
+    <a
+      class="stats-card bg-red-600/20"
+      routerLink="/requests"
+      [queryParams]="{ incompleted: false }"
+    >
+      <svg data-p-icon="ban" [size]="40"></svg>
+
+      <ng-container
+        *ngTemplateOutlet="
+          numTpl;
+          context: {
+            $implicit: stats().requestCount - stats().completedRequestCount,
+            label: 'الطلبات غير المكتملة',
+          }
+        "
+      />
+    </a>
+    <a
+      class="stats-card bg-green-800/20"
+      routerLink="/requests"
+      [queryParams]="{ completed: true }"
+    >
+      <svg data-p-icon="folder" [size]="40"></svg>
+      <ng-container
+        *ngTemplateOutlet="
+          numTpl;
+          context: {
+            $implicit: stats().completedRequestCount,
+            label: 'الطلبات المكتملة',
+          }
+        "
+      />
+    </a>
+  </div>
+</div>
+
+<ng-template #numTpl let-num let-label="label">
+  <span>{{ label }}</span>
+  @if (loading()) {
+    <svg data-p-icon="spinner" [spin]="true" class="h-6"></svg>
+  } @else {
+    <span>{{ num }}</span>
+  }
+</ng-template>

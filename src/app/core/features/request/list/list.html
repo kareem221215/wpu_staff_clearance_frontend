@@ -1,0 +1,12 @@
+<ng-template #toolbarTpl>
+  @if (isAdmin()) {
+    <!-- <app-college-input [field]="filtersForm.collegeId" (onChange)="onSearch('collegeId', $event)" /> -->
+  }
+
+  <!-- <app-staff-input
+    [field]="filtersForm.stafftId"
+    (onChange)="onSearch('staffId', $event?.staffId || null)"
+  /> -->
+</ng-template>
+
+<app-request-list [filters]="filters()" (filtersChange)="onFiltersChange($event)" />

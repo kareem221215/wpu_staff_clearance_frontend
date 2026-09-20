@@ -1,4 +1,6 @@
 import { UserStatusEnum } from '../../shared/enums/user-status.enum';
+import { UserTypeEnum } from '../../shared/enums/user-type.enum';
+import { UserRoleEnum } from '../../shared/enums/user-role.enum';
 
 export interface IStaff {
   readonly name: string;
@@ -9,4 +11,7 @@ export interface IStaff {
   readonly collegeName: string;
   readonly collegeAlias: string;
   readonly collegeId: number;
+  readonly type: UserTypeEnum;
+  readonly roles: UserRoleEnum[];
+  readonly requestId?: number;
 }

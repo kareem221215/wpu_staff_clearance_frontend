@@ -1,0 +1,15 @@
+<p-fluid>
+  <p-iconfield>
+    <p-inputicon>
+      <svg data-p-icon="search"></svg>
+    </p-inputicon>
+    <input
+      (input)="onChange.emit($event.target.value)"
+      [attr.id]="inputId()"
+      [formField]="field()"
+      pInputText
+      placeholder="ابحث عن طالب"
+      type="search"
+    />
+  </p-iconfield>
+</p-fluid>

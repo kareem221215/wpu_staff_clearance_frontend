@@ -1,9 +1,9 @@
-<!-- <form class="contents" [formRoot]="rejectionForm">
+<form class="contents" [formRoot]="rejectionForm">
   <app-dialog-container
     [title]="'هل أنت متأكد من رفض الطلب' + request().requestId + '؟'"
     (close)="close()"
   >
-    <ng-template #content>
+    <ng-template #contentTpl>
       <div class="flex flex-col gap-1">
         <label for="note">سبب الرفض <sup class="text-red-500">*</sup></label>
         <input
@@ -16,7 +16,7 @@
       </div>
     </ng-template>
 
-    <ng-template #footer>
+    <ng-template #footerTpl>
       <button pButton type="submit" severity="danger" [disabled]="rejectionForm().invalid()">
         <svg data-p-icon="times-circle"></svg>
         رفض
@@ -27,4 +27,4 @@
       </button>
     </ng-template>
   </app-dialog-container>
-</form> -->
+</form>

@@ -1,0 +1,22 @@
+<app-dialog-container [title]="'القرار #' + decisionId()" (close)="close()">
+  <ng-template #headerTpl>
+    @if (loading()) {
+      <p-message severity="info">
+        <div class="flex gap-2 items-center">
+          <svg data-p-icon="exclamation-triangle"></svg>
+          <span>جاري التحميل</span>
+        </div>
+      </p-message>
+    }
+  </ng-template>
+
+  <ng-template #contentTpl>
+    @if (loading()) {
+      <div class="flex justify-center p-4">
+        <svg data-p-icon="spinner" [spin]="true" [size]="40"></svg>
+      </div>
+    } @else {
+      <app-request-list [(filters)]="requestListFilters" />
+    }
+  </ng-template>
+</app-dialog-container>
