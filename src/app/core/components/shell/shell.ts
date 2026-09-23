@@ -9,6 +9,7 @@ import { List } from '@primeicons/angular/list';
 import { Users } from '@primeicons/angular/users';
 import { ButtonDirective } from 'primeng/button';
 import { UserRoleEnum } from '../../../shared/enums/user-role.enum';
+import { STAFF_ROLES } from '../../../shared/constants/staff-roles.constant';
 import { AuthService } from '../../../shared/services/auth.service';
 import { ShellService } from '../../services/shell.service';
 
@@ -35,5 +36,11 @@ export class Shell {
 
   canSeeDecisions() {
     return this.#authService.hasRoles([UserRoleEnum.ADMIN]);
+  }
+
+  // Department staff only ever need their own clearance page — the rest of
+  // the nav (requests list, decisions, stats) is for managers/HR/admin.
+  isDepartmentStaff() {
+    return this.#authService.hasRoles(STAFF_ROLES);
   }
 }

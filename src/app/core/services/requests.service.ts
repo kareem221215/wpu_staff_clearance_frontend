@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { UserRoleEnum } from '../../shared/enums/user-role.enum';
+import { STAFF_ROLES } from '../../shared/constants/staff-roles.constant';
 import { AuthService } from '../../shared/services/auth.service';
 import { RequestReject } from '../features/request/reject/reject';
 import { RequestActionTypeEnum } from '../enums/request-action-type.enum';
 import { RequestsHttpService } from '../http-services/requests.http-service';
 import { IRequest } from '../interfaces/request.interface';
-import { IStaff } from '../interfaces/staff.interface';
 import { ConfirmService } from './confirm.service';
 import { ToastService } from './toast.service';
 import { RequestView } from '../features/request/view/view';
@@ -86,7 +86,7 @@ export class RequestsService {
 
   openViewDialog(requestId: number) {
     return new Promise<boolean>((resolve) => {
-      const ref = this.#dialogService.open(RequestView, {
+      const ref = this.#dialogService.open(DecisionView, {
         closeOnEscape: true,
         dismissableMask: true,
         draggable: false,
@@ -104,69 +104,41 @@ export class RequestsService {
   }
 
   canApprove(request: IRequest) {
-    return this.#isNext(request) || (this.#isRejected(request) && !this.#isApproved(request));
+    return this.#isMyTurn(request);
   }
 
   canReject(request: IRequest) {
-    return this.#isNext(request);
+    return this.#isMyTurn(request);
   }
 
   canArchive(request: IRequest) {
     return (
       this.isCompleted(request) &&
-      request.actions.every(({ type }) => type !== RequestActionTypeEnum.ARCHIVE) &&
+      !request.archivedAt &&
       this.#authService.hasRoles([UserRoleEnum.HUMAN_RESOURCES])
     );
   }
 
   canCreate() {
-    return this.#authService.hasRoles([UserRoleEnum.IT_STAFF]);
+    return this.#authService.hasRoles(STAFF_ROLES);
   }
-  //TO-DO change user role to all staffs
 
   canPrint(request: IRequest) {
-    return this.isCompleted(request) && this.#authService.hasRoles([UserRoleEnum.HUMAN_RESOURCES]);
+    return (
+      this.#authService.hasRoles([UserRoleEnum.HUMAN_RESOURCES]) &&
+      (this.isCompleted(request) || this.#isMyTurn(request))
+    );
   }
 
   canView(request: IRequest) {
-    return (
-      this.isCompleted(request) ||
-      this.#isNext(request) ||
-      this.#isApproved(request) ||
-      this.#isRejected(request)
-    );
+    return this.isCompleted(request) || this.canApprove(request);
   }
 
   isCompleted(request: IRequest) {
-    return (
-      request.nextActionRole === null &&
-      this.#getRejectionRoles(request).every((role) =>
-        this.#getApprovalRoles(request).includes(role),
-      )
-    );
+    return request.nextApproverStaffId === null;
   }
 
-  #isRejected(request: IRequest) {
-    return this.#authService.hasRoles(this.#getRejectionRoles(request));
-  }
-
-  #isApproved(request: IRequest) {
-    return this.#authService.hasRoles(this.#getApprovalRoles(request));
-  }
-
-  #isNext({ nextActionRole }: IRequest) {
-    return nextActionRole && this.#authService.hasRoles([nextActionRole]);
-  }
-
-  #getApprovalRoles(request: IRequest) {
-    return request.actions
-      .filter((action) => action.type === RequestActionTypeEnum.APPROVE)
-      .map(({ role }) => role);
-  }
-
-  #getRejectionRoles(request: IRequest) {
-    return request.actions
-      .filter((action) => action.type === RequestActionTypeEnum.REJECT)
-      .map(({ role }) => role);
+  #isMyTurn({ nextApproverStaffId }: IRequest) {
+    return nextApproverStaffId !== null && nextApproverStaffId === this.#authService.staffId;
   }
 }

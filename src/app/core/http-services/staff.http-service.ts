@@ -13,7 +13,7 @@ export class StaffHttpService {
   readonly #httpClient = inject(HttpClient);
   readonly #httpService = inject(HttpService);
 
-  readonly #baseUrl = `${this.#docsApisServiceUrl}/students`;
+  readonly #baseUrl = `${this.#docsApisServiceUrl}/staff`;
   readonly #managersUrl = `${this.#docsApisServiceUrl}/managers`;
 
   fetch$(payload: IHttpFetchPayload & { collegeIds?: number[] }) {

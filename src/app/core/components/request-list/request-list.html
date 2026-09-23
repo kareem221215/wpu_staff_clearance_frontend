@@ -52,7 +52,9 @@
       </th> -->
 
       <th class="text-center">
-        <svg data-p-icon="bolt"></svg>
+        <div class="flex items-center justify-center">
+          <svg data-p-icon="bolt"></svg>
+        </div>
       </th>
     </tr>
   </ng-template>
@@ -81,7 +83,7 @@
       </td>
 
       <td class="font-mono text-nowrap text-center">
-        {{ countApprovals(request) }}
+        {{ request.approvedCount }}
       </td>
 
       <!-- @if (request.decisionId) {

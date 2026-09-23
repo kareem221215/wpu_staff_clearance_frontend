@@ -15,7 +15,6 @@ import { ButtonDirective } from 'primeng/button';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
 import { finalize, tap } from 'rxjs';
 import { IHttpListResponse } from '../../../shared/interfaces/http-list-response.interface';
-import { RequestActionTypeEnum } from '../../enums/request-action-type.enum';
 import { RequestsHttpService } from '../../http-services/requests.http-service';
 import { IRequest } from '../../interfaces/request.interface';
 import { RequestsService } from '../../services/requests.service';
@@ -137,10 +136,6 @@ export class RequestListTable implements OnChanges {
         this.fetch();
       }
     });
-  }
-
-  protected countApprovals(request: IRequest) {
-    return request.actions.filter(({ type }) => type === RequestActionTypeEnum.APPROVE).length;
   }
 
   protected canApprove(request: IRequest) {

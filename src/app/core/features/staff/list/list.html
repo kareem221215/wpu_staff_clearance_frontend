@@ -1,15 +1,4 @@
-<p-table
-  (onLazyLoad)="onLazyLoad($event)"
-  [first]="searchModel().skip"
-  [loading]="loading()"
-  [rows]="pageSize"
-  [totalRecords]="staff().total"
-  [value]="staff().data"
-  class="min-h-166"
-  dataKey="staffId"
-  lazy
-  paginator
->
+<p-table [loading]="loading()" [value]="staff().data" class="min-h-166" dataKey="staffId">
   <ng-template #emptymessage>
     <tr>
       <td colspan="7" class="text-center">لم يتم العثور على أي مدير.</td>
@@ -32,8 +21,11 @@
         </div>
       </th>
 
-      <th class="text-center w-1">
-        <svg data-p-icon="bolt"></svg>
+      <th class="text-center">
+        <div class="flex items-center justify-center gap-2">
+          <svg data-p-icon="bolt"></svg>
+          <span>الحالة</span>
+        </div>
       </th>
     </tr>
   </ng-template>
@@ -45,13 +37,33 @@
 
       <td class="text-center">
         @if (getApproval(manager); as approval) {
-          @if (approval.approved) {
-            <svg data-p-icon="check"></svg>
+          @if (approval.status === RequestApprovalStatusEnum.APPROVED) {
+            <span class="text-green-700 font-medium">تمت الموافقة</span>
+          } @else if (approval.status === RequestApprovalStatusEnum.REJECTED) {
+            <div class="flex items-center justify-center gap-1">
+              <span class="text-red-600 font-medium">تم الرفض</span>
+              @if (approval.note) {
+                <button
+                  type="button"
+                  class="cursor-pointer text-zinc-500 hover:text-zinc-700"
+                  (click)="notePopover.toggle($event)"
+                >
+                  <svg data-p-icon="info-circle" [size]="18"></svg>
+                </button>
+                <p-popover #notePopover>
+                  <div class="max-w-60 text-sm">{{ approval.note }}</div>
+                </p-popover>
+              }
+            </div>
           } @else {
-            <svg data-p-icon="times"></svg>
+            <div class="flex items-center justify-center">
+              <svg data-p-icon="spinner" [spin]="creating()" [size]="24"></svg>
+            </div>
           }
         } @else {
-          <svg data-p-icon="spinner" [spin]="creating()" [size]="24"></svg>
+          <div class="flex items-center justify-center">
+            <svg data-p-icon="spinner" [spin]="creating()" [size]="24"></svg>
+          </div>
         }
       </td>
     </tr>
@@ -59,8 +71,16 @@
 </p-table>
 
 <ng-template #toolbarTpl>
-  <button (click)="startProcess()" pButton severity="secondary" size="small">
-    <svg data-p-icon="send"></svg>
-    انشاء طلب
-  </button>
+  @if (canCreate()) {
+    <button
+      (click)="startProcess()"
+      [disabled]="creating()"
+      pButton
+      severity="secondary"
+      size="small"
+    >
+      <svg data-p-icon="send"></svg>
+      انشاء طلب
+    </button>
+  }
 </ng-template>

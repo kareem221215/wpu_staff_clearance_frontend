@@ -48,8 +48,8 @@ export class RequestsHttpService {
   fetchApprovals$(requestId: number) {
     return this.#httpClient.get<IRequestApproval[]>(`${this.#baseUrl}/${requestId}/approvals`).pipe(
       map((approvals) =>
-        approvals.map(({ createdAt, ...approval }) => ({
-          createdAt: new Date(createdAt),
+        approvals.map(({ decidedAt, ...approval }) => ({
+          decidedAt: decidedAt ? new Date(decidedAt) : null,
           ...approval,
         })),
       ),

@@ -15,15 +15,15 @@ export const routes: Routes = [
           import('./core/components/root-redirect/root-redirect').then((c) => c.RootRedirect),
       },
       {
-        path: 'students',
+        path: 'clearance',
         loadComponent: () => import('./core/features/staff/list/list').then((c) => c.StaffList),
       },
-      {
-        path: 'decisions',
-        canActivate: [canSeeDecisionsGuard],
-        loadComponent: () =>
-          import('./core/features/decision/list/list').then((c) => c.DecisionList),
-      },
+      // {
+      //   path: 'decisions',
+      //   canActivate: [canSeeDecisionsGuard],
+      //   loadComponent: () =>
+      //     import('./core/features/decision/list/list').then((c) => c.DecisionList),
+      // },
       {
         path: 'request',
         children: [
@@ -32,11 +32,6 @@ export const routes: Routes = [
             loadComponent: () =>
               import('./core/features/request/list/list').then((c) => c.RequestList),
           },
-          {
-            path: 'print/:requestId',
-            loadComponent: () =>
-              import('./core/features/request/print/print').then((c) => c.RequestPrint),
-          },
         ],
       },
       {
@@ -44,6 +39,13 @@ export const routes: Routes = [
         loadComponent: () => import('./core/features/stats/stats').then((c) => c.Stats),
       },
     ],
+  },
+  {
+    // Standalone (no Shell/nav chrome around it) so the printed page only ever
+    // contains the clearance form itself.
+    path: 'request/print/:requestId',
+    canActivate: [authGuard(true)],
+    loadComponent: () => import('./core/features/request/print/print').then((c) => c.RequestPrint),
   },
   {
     path: 'login',

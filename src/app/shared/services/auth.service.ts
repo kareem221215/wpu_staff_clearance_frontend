@@ -51,6 +51,10 @@ export class AuthService {
     return this.#accessTokenPayload$.value?.type === UserTypeEnum.STAFF;
   }
 
+  get staffId() {
+    return this.#accessTokenPayload$.value?.sub ?? null;
+  }
+
   get isStaff$() {
     return this.#accessTokenPayload$.pipe(
       map((payload) => payload?.type === UserTypeEnum.STAFF),

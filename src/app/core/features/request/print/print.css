@@ -1,121 +1,158 @@
 @reference "../../../../../styles.css";
 
-.page {
-  @apply w-[210mm];
-  @apply min-h-[297mm];
-  @apply py-[15mm] px-[20mm];
-  @apply mx-auto bg-white text-black text-base;
+.loading,
+.error-screen {
+  @apply flex flex-col justify-center items-center h-screen text-[#555] text-xl gap-3;
 }
 
-.header {
-  @apply flex justify-between items-center mb-2;
+.error-title {
+  @apply text-lg font-bold text-red-600;
 }
 
-.header-right {
-  @apply flex flex-col items-center gap-1;
+.toolbar {
+  @apply fixed top-0 left-0 right-0 z-50 flex items-center justify-between gap-4;
+  @apply bg-[#1a3a6b] text-white px-6 py-3 shadow-lg;
 }
 
-.logo {
-  @apply w-19 h-19 object-contain;
+.back-link {
+  @apply flex items-center gap-2 text-blue-200 hover:text-white transition-colors text-sm cursor-pointer;
+  @apply bg-transparent border-0;
 }
 
-.university-name {
-  @apply font-bold text-sm;
+.toolbar-title {
+  @apply font-bold;
 }
 
-.header-center {
-  @apply text-center;
+.toolbar .p-button {
+  @apply !bg-[#f6c343] !text-[#1a3a6b] !border-[#f6c343] font-bold;
 }
 
-.form-title {
-  @apply font-bold text-[#1a3a6e] text-2xl;
+.print-area {
+  @apply w-[210mm] min-h-[297mm] mx-auto bg-white text-black text-[14px];
+  padding: 60mm 15mm 20mm;
+  margin-top: 90px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
-.header-left {
-  @apply text-left leading-relaxed text-sm;
+.page-header {
+  @apply text-center mb-4 pb-3 border-b-2 border-[#1a3a6b];
 }
 
-.divider {
-  @apply border-0 border-t-2 border-[#1a3a6e] my-2;
+.page-subtitle {
+  @apply text-[16px] text-[#555] mt-1;
 }
 
-.info-table {
-  @apply w-full border-collapse mb-3 text-sm;
+.page-subtitle-bold {
+  @apply text-sm text-[#555] mt-1 font-bold;
 }
 
-.info-table th,
-.info-table td {
-  @apply px-2 py-1.25 border border-[#ccc];
+.employee-details {
+  @apply flex justify-between gap-4 mb-3.5 text-sm;
 }
 
-.info-table th {
-  @apply bg-[#eef2fb] font-bold whitespace-nowrap w-[15%];
+.label {
+  @apply text-[#555];
 }
 
-.info-table td {
-  @apply w-[35%];
+.value {
+  @apply text-[#1a3a6b];
 }
 
 .clearance-table {
-  @apply w-full border-collapse mb-5 text-sm;
+  @apply w-full border-collapse text-sm mb-7;
 }
 
 .clearance-table th,
 .clearance-table td {
-  @apply px-2 py-1.5 text-center;
-  @apply border-[1.5px] border-[#333];
+  @apply p-2 border border-[#ddd] text-right;
 }
 
 .clearance-table thead tr {
-  @apply bg-[#1a3a6e] text-white;
+  @apply bg-[#1a3a6b] text-white;
+}
+
+.clearance-table thead th {
+  @apply border-[#1a3a6b];
 }
 
 .clearance-table tbody tr:nth-child(even) {
-  @apply bg-[#f5f7fc];
+  @apply bg-[#f8faff];
 }
 
 .col-num {
-  @apply w-[5%];
+  @apply w-[5%] text-center font-bold text-[#1a3a6b];
 }
 
 .col-dept {
-  @apply w-1/4 text-right;
+  @apply w-1/4 text-black;
 }
 
 .col-staff {
-  @apply w-1/5;
-}
-
-.request-date {
-  @apply text-xs;
-}
-
-.col-date {
-  @apply w-[15%];
+  @apply w-1/5 text-black;
 }
 
 .col-status {
-  @apply w-[35%];
+  @apply w-[15%] text-black;
 }
 
-.approved {
-  @apply text-green-800 font-bold;
+.col-status.approved {
+  @apply text-green-600 font-bold;
 }
 
-.empty-row {
-  @apply text-center text-[#888] p-5;
+.col-status.rejected {
+  @apply text-red-600 font-bold;
 }
 
-.footer {
-  @apply flex justify-between items-end mt-8;
+.statement {
+  @apply mb-4 py-3 px-4 border border-[#1a3a6b] rounded bg-[#f8faff];
 }
 
-.footer-block {
-  @apply text-center text-sm;
+.statement p {
+  @apply m-0 text-sm leading-8 text-[#1a3a6b];
 }
 
-.loading {
-  @apply flex justify-center items-center h-screen text-[#555] text-xl;
+.underline {
+  @apply border-b border-[#1a3a6b] pb-px;
+}
+
+.date-line {
+  @apply mb-8 text-sm text-[#1a3a6b] text-center;
+}
+
+.date-picker {
+  @apply mt-2 flex items-center justify-center gap-2;
+}
+
+.date-picker label {
+  @apply text-xs text-[#555];
+}
+
+.date-picker input {
+  @apply border border-[#1a3a6b] rounded px-2 py-1 text-sm text-[#1a3a6b];
+}
+
+.signatories {
+  @apply flex justify-between mt-4;
+}
+
+.signatory {
+  @apply text-center w-[42%];
+}
+
+.signatory-title {
+  @apply mb-1 text-sm font-bold text-[#1a3a6b];
+}
+
+.signatory-name {
+  @apply mb-10 text-sm text-[#333];
+}
+
+.signature-line {
+  @apply border-b border-[#aaa] w-full;
+}
+
+.signature-label {
+  @apply mt-1 text-xs text-[#888];
 }
 
 @media print {
@@ -124,8 +161,13 @@
     margin: 0;
   }
 
-  .page {
-    padding: 10mm;
-    @apply w-full m-0 min-h-0;
+  .toolbar {
+    display: none !important;
+  }
+
+  .print-area {
+    @apply w-full m-0 min-h-0 shadow-none;
+    padding: 60mm 15mm 20mm;
+    margin-top: 0;
   }
 }

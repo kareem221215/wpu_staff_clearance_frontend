@@ -1,95 +1,102 @@
-@if (request(); as request) {
-  <div class="flex justify-center px-20 py-5 gap-5 print:hidden">
+@if (loading()) {
+  <div class="loading" dir="rtl">جاري التحميل...</div>
+} @else if (error()) {
+  <div class="error-screen print:hidden" dir="rtl">
+    <p class="error-title">خطأ</p>
+    <p>{{ error() }}</p>
     <button pButton severity="secondary" type="button" (click)="goBack()">
       <svg data-p-icon="arrow-right"></svg>
-      رجوع
+      العودة
     </button>
-    <button pButton severity="primary" type="button" (click)="print()">
-      <svg data-p-icon="print"></svg>
-      طباعة
-    </button>
-  </div>
-
-  <div class="page">
-    <!-- Header -->
-    <div class="header">
-      <div class="header-right flex-1">
-        <img
-          src="watania-logo.svg"
-          alt="شعار الجامعة"
-          class="logo"
-          onerror="this.style.display = 'none'"
-        />
-      </div>
-      <div class="header-center flex-1">
-        <div class="form-title">براءة الذمة</div>
-        <div class="request-date">التاريخ: {{ today }}</div>
-      </div>
-      <div class="header-left flex-1">
-        <!-- <div class="request-no">رقم الطلب: {{ d.request.requestId }}</div> -->
-        <div class="university-name">الجامعة الوطنية الخاصة</div>
-        <div class="title">مديرية شؤون الطلاب المركزية</div>
-      </div>
-    </div>
-
-    <hr class="divider" />
-
-    <!-- Student Info -->
-    @if (studnet(); as student) {
-      <!-- <table class="info-table">
-        <tr>
-          <th>اسم الطالب(ة):</th>
-          <td>{{ student.name }}</td>
-          <th>الرقم الجامعي:</th>
-          <td>{{ student.uid }}</td>
-        </tr>
-        <tr>
-          <th>الكلية:</th>
-          <td>{{ student.collegeName }}</td>
-          <th>المستوى الدراسي:</th>
-          <td>{{ getLevelLabel(request.level) }}</td>
-        </tr>
-        <tr>
-          <th>الفصل الدراسي:</th>
-          <td>{{ getSemesterLabel(request.semester) }}</td>
-          <th>العام الدراسي:</th>
-          <td>{{ request.year }}</td>
-        </tr>
-      </table> -->
-    }
-
-    <hr class="divider" />
-
-    <!-- Clearance Table -->
-    <table class="clearance-table">
-      <thead>
-        <tr>
-          <th class="col-num">#</th>
-          <th class="col-staff">المسؤول</th>
-          <th class="col-date">التاريخ</th>
-          <th class="col-status">التوقيع</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (approval of approvals(); track approval.requestActionId; let i = $index) {
-          <tr>
-            <td class="col-num">{{ i + 1 }}</td>
-            <!-- <td class="col-staff">{{ approval.takenByName }}</td> -->
-            <td class="col-date">{{ formatDate(approval.takenAt) }}</td>
-            <td class="col-status approved">تمت الموافقة</td>
-          </tr>
-        }
-      </tbody>
-    </table>
-
-    <!-- Footer -->
-    <div class="footer">
-      <div class="footer-block">
-        هذه الوثيقة تؤكد إتمام جميع إجراءات براءة الذمة للطالب المذكور أعلاه لدى جميع الجهات المعنية
-        بالجامعة. تم إصدارها آليا عبر منصة براءة ذمة الطالب.
-      </div>
-    </div>
   </div>
 } @else {
-  <div class="loading" dir="rtl">جاري تحميل البيانات...</div>
+  <div dir="rtl">
+    <div class="toolbar print:hidden">
+      <button class="back-link" type="button" (click)="goBack()">
+        <svg data-p-icon="arrow-right"></svg>
+        رجوع
+      </button>
+
+      <span class="toolbar-title">معاينة الطباعة — {{ request()!.requestId }}</span>
+
+      <button pButton severity="warn" type="button" (click)="print()">
+        <svg data-p-icon="print"></svg>
+        طباعة / حفظ PDF
+      </button>
+    </div>
+
+    <div class="print-area">
+      <div class="page-header">
+        <p class="page-subtitle">براءة ذمة</p>
+        <p class="page-subtitle-bold">لأعضاء الهيئة التدريسية والفنية والعاملين الإداريين</p>
+      </div>
+
+      <div class="employee-details">
+        <div>
+          <span class="label">الاسم الكامل: </span>
+          <strong class="value">{{ staff()!.name }}</strong>
+        </div>
+        <div>
+          <span class="label">مكان العمل: </span>
+          <strong class="value">{{ staff()!.collegeName }}</strong>
+        </div>
+      </div>
+
+      <table class="clearance-table">
+        <thead>
+          <tr>
+            <th class="col-num">#</th>
+            <th class="col-dept">اسم المديرية / الكلية</th>
+            <th class="col-staff">مدير / عميد</th>
+            <th class="col-status">التوقيع</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (approval of approvals(); track approval.requestApprovalId) {
+            <tr>
+              <td class="col-num">{{ approval.order }}</td>
+              <td class="col-dept">{{ approval.departmentName }}</td>
+              <td class="col-staff">{{ approval.staffName }}</td>
+              <td
+                class="col-status"
+                [ngClass]="{
+                  approved: approval.status === RequestApprovalStatusEnum.APPROVED,
+                  rejected: approval.status === RequestApprovalStatusEnum.REJECTED,
+                }"
+              >
+                {{ statusLabel(approval.status) }}
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+
+      <div class="statement">
+        <p>
+          لدى الرجوع إلى قيودنا تبين أن
+          <strong class="underline">{{ staff()!.name }}</strong>
+          بريء/ة الذمة تجاه الجامعة الوطنية الخاصة حتى تاريخه.
+        </p>
+      </div>
+
+      <div class="date-line">
+        <span>حماة في {{ formatPrintDate() }}</span>
+      </div>
+
+      <div class="signatories">
+        <div class="signatory">
+          <p class="signatory-title">مدير الموارد البشرية</p>
+          <p class="signatory-name">ميلين مخول</p>
+          <div class="signature-line"></div>
+          <p class="signature-label">التوقيع</p>
+        </div>
+        <div class="signatory">
+          <p class="signatory-title">رئيس الجامعة الوطنية الخاصة</p>
+          <p class="signatory-name">أ. د. عهد خزام</p>
+          <div class="signature-line"></div>
+          <p class="signature-label">التوقيع</p>
+        </div>
+      </div>
+    </div>
+  </div>
 }
