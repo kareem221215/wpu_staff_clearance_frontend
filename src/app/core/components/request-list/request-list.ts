@@ -4,8 +4,6 @@ import { RouterLink } from '@angular/router';
 import { Bolt } from '@primeicons/angular/bolt';
 import { Building } from '@primeicons/angular/building';
 import { CheckCircle } from '@primeicons/angular/check-circle';
-import { Cog } from '@primeicons/angular/cog';
-import { ExclamationTriangle } from '@primeicons/angular/exclamation-triangle';
 import { Eye } from '@primeicons/angular/eye';
 import { Folder } from '@primeicons/angular/folder';
 import { GraduationCap } from '@primeicons/angular/graduation-cap';
@@ -36,8 +34,6 @@ export interface IRequestListFilters {
     Building,
     ButtonDirective,
     CheckCircle,
-    Cog,
-    ExclamationTriangle,
     Eye,
     Folder,
     GraduationCap,

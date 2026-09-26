@@ -24,7 +24,7 @@
 }
 
 .toolbar .p-button {
-  @apply !bg-[#f6c343] !text-[#1a3a6b] !border-[#f6c343] font-bold;
+  @apply bg-[#f6c343] text-[#1a3a6b] border-[#f6c343] font-bold;
 }
 
 .print-area {

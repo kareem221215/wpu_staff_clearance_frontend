@@ -3,7 +3,6 @@ import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLinkActive, RouterLinkWithHref, RouterOutlet } from '@angular/router';
-import { Compress } from '@primeicons/angular/compress';
 import { GraduationCap } from '@primeicons/angular/graduation-cap';
 import { List } from '@primeicons/angular/list';
 import { Users } from '@primeicons/angular/users';
@@ -17,7 +16,6 @@ import { ShellService } from '../../services/shell.service';
   templateUrl: './shell.html',
   imports: [
     ButtonDirective,
-    Compress,
     FormsModule,
     GraduationCap,
     List,
