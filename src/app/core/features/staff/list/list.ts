@@ -1,20 +1,14 @@
-import { Component, inject, OnInit, signal, TemplateRef, viewChild } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, TemplateRef, viewChild } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { form } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
-import { Bolt } from '@primeicons/angular/bolt';
-import { Building } from '@primeicons/angular/building';
-import { InfoCircle } from '@primeicons/angular/info-circle';
 import { Send } from '@primeicons/angular/send';
-import { Spinner } from '@primeicons/angular/spinner';
-import { User } from '@primeicons/angular/user';
 import { ButtonDirective } from 'primeng/button';
-import { Popover } from 'primeng/popover';
-import { TableModule } from 'primeng/table';
 import { finalize, of, switchMap, tap } from 'rxjs';
 import { IHttpListResponse } from '../../../../shared/interfaces/http-list-response.interface';
 import { AuthService } from '../../../../shared/services/auth.service';
+import { ApprovalList } from '../../../components/approval-list/approval-list';
 import { RequestApprovalStatusEnum } from '../../../enums/request-approval-status.enum';
 import { RequestsHttpService } from '../../../http-services/requests.http-service';
 import { StaffHttpService } from '../../../http-services/staff.http-service';
@@ -24,18 +18,7 @@ import { RequestsService } from '../../../services/requests.service';
 import { ShellService } from '../../../services/shell.service';
 
 @Component({
-  imports: [
-    Bolt,
-    Building,
-    ButtonDirective,
-    InfoCircle,
-    Popover,
-    Send,
-    Spinner,
-    TableModule,
-    User,
-    FormsModule,
-  ],
+  imports: [ApprovalList, ButtonDirective, FormsModule, Send],
   styles: ':host { display: contents; }',
   templateUrl: './list.html',
 })
@@ -47,8 +30,6 @@ export class StaffList implements OnInit {
   readonly #shellService = inject(ShellService);
   readonly #staffHttpService = inject(StaffHttpService);
 
-  protected readonly RequestApprovalStatusEnum = RequestApprovalStatusEnum;
-
   readonly toolbarTpl = viewChild<TemplateRef<void>>('toolbarTpl');
 
   readonly approvals = signal<IRequestApproval[]>([]);
@@ -58,14 +39,8 @@ export class StaffList implements OnInit {
 
   readonly isAdmin = toSignal(this.#authService.isAdmin$);
 
-  // undefined = not resolved yet, null = unknown, number = the logged-in
-  // staff's own department — used to scope the direct manager shown below.
   readonly myCollegeId = signal<number | null | undefined>(undefined);
 
-  // Whose clearance page this is. Comes from the `staffId` query param so the
-  // URL is shareable/bookmarkable (e.g. a manager could open someone else's
-  // page); falls back to the logged-in user's own id when absent. A real
-  // backend is the one that decides whether the caller may actually see it.
   readonly staffId = signal<number | null>(null);
 
   readonly searchModel = signal<{ collegeId: number | null; searchTxt: string }>({
@@ -74,6 +49,26 @@ export class StaffList implements OnInit {
   });
 
   readonly searchForm = form(this.searchModel);
+
+  readonly displayApprovals = computed<IRequestApproval[]>(() => {
+    const approvals = this.approvals();
+
+    if (approvals.length > 0) {
+      return [...approvals].sort((a, b) => a.order - b.order);
+    }
+
+    return this.staff().data.map((manager, index) => ({
+      requestApprovalId: -(index + 1),
+      requestId: 0,
+      order: index + 1,
+      staffId: manager.staffId,
+      staffName: manager.name,
+      departmentName: manager.collegeName,
+      status: RequestApprovalStatusEnum.PENDING,
+      note: null,
+      decidedAt: null,
+    }));
+  });
 
   constructor() {
     this.#activatedRoute.queryParams
@@ -134,10 +129,6 @@ export class StaffList implements OnInit {
         this.fetch();
         this.#fetchApprovals();
       });
-  }
-
-  getApproval(manager: IStaff): IRequestApproval | undefined {
-    return this.approvals().find((a) => a.staffId === manager.staffId);
   }
 
   canCreate() {

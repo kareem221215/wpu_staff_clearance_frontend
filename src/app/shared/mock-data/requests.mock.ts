@@ -108,9 +108,6 @@ const DEPARTMENT_NAME_BY_STAFF_ID = new Map(
   [...DIRECT_MANAGERS, ...MANAGERS].map((manager) => [manager.staffId, manager.collegeName]),
 );
 
-// Every request gets a 7-row chain: the staff's direct manager (order 1), then
-// the same 6 fixed managers in the same fixed order (orders 2-7) — library,
-// financial affairs, payroll, IT directorate, warehouse, then HR.
 function buildChain(
   requestId: number,
   startId: number,
@@ -143,7 +140,12 @@ let nextApprovalId = 1;
 const chains: IRequestApproval[][] = [];
 
 let built = buildChain(1001, nextApprovalId, [
-  { staffId: 101, staffName: 'د. خالد إبراهيم السعيد', status: APPROVED, decidedAt: new Date('2026-08-20T09:00:00') },
+  {
+    staffId: 101,
+    staffName: 'د. خالد إبراهيم السعيد',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-20T09:00:00'),
+  },
   { staffId: 201, staffName: 'أ.د. سلطان علي العتيبي', status: PENDING },
   { staffId: 202, staffName: 'أ.د. منى عبدالعزيز الزهراني', status: PENDING },
   { staffId: 203, staffName: 'أ. ياسر تركي البلوي', status: PENDING },
@@ -173,21 +175,71 @@ chains.push(built.approvals);
 nextApprovalId = built.nextId;
 
 built = buildChain(1003, nextApprovalId, [
-  { staffId: 105, staffName: 'م. فيصل ناصر العنزي', status: APPROVED, decidedAt: new Date('2026-08-23T08:45:00') },
-  { staffId: 201, staffName: 'أ.د. سلطان علي العتيبي', status: APPROVED, decidedAt: new Date('2026-08-23T13:00:00') },
-  { staffId: 202, staffName: 'أ.د. منى عبدالعزيز الزهراني', status: APPROVED, decidedAt: new Date('2026-08-24T09:00:00') },
-  { staffId: 203, staffName: 'أ. ياسر تركي البلوي', status: APPROVED, decidedAt: new Date('2026-08-24T10:15:00') },
-  { staffId: 204, staffName: 'م. بندر سعد الغامدي', status: APPROVED, decidedAt: new Date('2026-08-24T15:30:00') },
-  { staffId: 205, staffName: 'أ. طارق فهد الحربي', status: APPROVED, decidedAt: new Date('2026-08-25T08:00:00') },
-  { staffId: 206, staffName: 'أ.د. هند خالد المالكي', status: APPROVED, decidedAt: new Date('2026-08-25T13:00:00') },
+  {
+    staffId: 105,
+    staffName: 'م. فيصل ناصر العنزي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-23T08:45:00'),
+  },
+  {
+    staffId: 201,
+    staffName: 'أ.د. سلطان علي العتيبي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-23T13:00:00'),
+  },
+  {
+    staffId: 202,
+    staffName: 'أ.د. منى عبدالعزيز الزهراني',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-24T09:00:00'),
+  },
+  {
+    staffId: 203,
+    staffName: 'أ. ياسر تركي البلوي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-24T10:15:00'),
+  },
+  {
+    staffId: 204,
+    staffName: 'م. بندر سعد الغامدي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-24T15:30:00'),
+  },
+  {
+    staffId: 205,
+    staffName: 'أ. طارق فهد الحربي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-25T08:00:00'),
+  },
+  {
+    staffId: 206,
+    staffName: 'أ.د. هند خالد المالكي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-25T13:00:00'),
+  },
 ]);
 chains.push(built.approvals);
 nextApprovalId = built.nextId;
 
 built = buildChain(1004, nextApprovalId, [
-  { staffId: 104, staffName: 'د. لمى سعود القرني', status: APPROVED, decidedAt: new Date('2026-09-01T09:00:00') },
-  { staffId: 201, staffName: 'أ.د. سلطان علي العتيبي', status: APPROVED, decidedAt: new Date('2026-09-01T14:00:00') },
-  { staffId: 202, staffName: 'أ.د. منى عبدالعزيز الزهراني', status: APPROVED, decidedAt: new Date('2026-09-02T10:30:00') },
+  {
+    staffId: 104,
+    staffName: 'د. لمى سعود القرني',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-01T09:00:00'),
+  },
+  {
+    staffId: 201,
+    staffName: 'أ.د. سلطان علي العتيبي',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-01T14:00:00'),
+  },
+  {
+    staffId: 202,
+    staffName: 'أ.د. منى عبدالعزيز الزهراني',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-02T10:30:00'),
+  },
   { staffId: 203, staffName: 'أ. ياسر تركي البلوي', status: PENDING },
   { staffId: 204, staffName: 'م. بندر سعد الغامدي', status: PENDING },
   { staffId: 205, staffName: 'أ. طارق فهد الحربي', status: PENDING },
@@ -197,32 +249,107 @@ chains.push(built.approvals);
 nextApprovalId = built.nextId;
 
 built = buildChain(1005, nextApprovalId, [
-  { staffId: 101, staffName: 'د. خالد إبراهيم السعيد', status: APPROVED, decidedAt: new Date('2026-08-27T09:00:00') },
-  { staffId: 201, staffName: 'أ.د. سلطان علي العتيبي', status: APPROVED, decidedAt: new Date('2026-08-27T11:00:00') },
-  { staffId: 202, staffName: 'أ.د. منى عبدالعزيز الزهراني', status: APPROVED, decidedAt: new Date('2026-08-27T13:00:00') },
-  { staffId: 203, staffName: 'أ. ياسر تركي البلوي', status: APPROVED, decidedAt: new Date('2026-08-28T09:00:00') },
-  { staffId: 204, staffName: 'م. بندر سعد الغامدي', status: APPROVED, decidedAt: new Date('2026-08-28T11:00:00') },
-  { staffId: 205, staffName: 'أ. طارق فهد الحربي', status: APPROVED, decidedAt: new Date('2026-08-28T15:00:00') },
-  { staffId: 206, staffName: 'أ.د. هند خالد المالكي', status: APPROVED, decidedAt: new Date('2026-08-29T10:00:00') },
+  {
+    staffId: 101,
+    staffName: 'د. خالد إبراهيم السعيد',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-27T09:00:00'),
+  },
+  {
+    staffId: 201,
+    staffName: 'أ.د. سلطان علي العتيبي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-27T11:00:00'),
+  },
+  {
+    staffId: 202,
+    staffName: 'أ.د. منى عبدالعزيز الزهراني',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-27T13:00:00'),
+  },
+  {
+    staffId: 203,
+    staffName: 'أ. ياسر تركي البلوي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-28T09:00:00'),
+  },
+  {
+    staffId: 204,
+    staffName: 'م. بندر سعد الغامدي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-28T11:00:00'),
+  },
+  {
+    staffId: 205,
+    staffName: 'أ. طارق فهد الحربي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-28T15:00:00'),
+  },
+  {
+    staffId: 206,
+    staffName: 'أ.د. هند خالد المالكي',
+    status: APPROVED,
+    decidedAt: new Date('2026-08-29T10:00:00'),
+  },
 ]);
 chains.push(built.approvals);
 nextApprovalId = built.nextId;
 
 built = buildChain(1006, nextApprovalId, [
-  { staffId: 102, staffName: 'د. نورة محمد الشمري', status: APPROVED, decidedAt: new Date('2026-09-03T09:00:00') },
-  { staffId: 201, staffName: 'أ.د. سلطان علي العتيبي', status: APPROVED, decidedAt: new Date('2026-09-03T11:00:00') },
-  { staffId: 202, staffName: 'أ.د. منى عبدالعزيز الزهراني', status: APPROVED, decidedAt: new Date('2026-09-03T14:00:00') },
-  { staffId: 203, staffName: 'أ. ياسر تركي البلوي', status: APPROVED, decidedAt: new Date('2026-09-04T09:00:00') },
-  { staffId: 204, staffName: 'م. بندر سعد الغامدي', status: APPROVED, decidedAt: new Date('2026-09-04T11:00:00') },
-  { staffId: 205, staffName: 'أ. طارق فهد الحربي', status: APPROVED, decidedAt: new Date('2026-09-04T15:00:00') },
+  {
+    staffId: 102,
+    staffName: 'د. نورة محمد الشمري',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-03T09:00:00'),
+  },
+  {
+    staffId: 201,
+    staffName: 'أ.د. سلطان علي العتيبي',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-03T11:00:00'),
+  },
+  {
+    staffId: 202,
+    staffName: 'أ.د. منى عبدالعزيز الزهراني',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-03T14:00:00'),
+  },
+  {
+    staffId: 203,
+    staffName: 'أ. ياسر تركي البلوي',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-04T09:00:00'),
+  },
+  {
+    staffId: 204,
+    staffName: 'م. بندر سعد الغامدي',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-04T11:00:00'),
+  },
+  {
+    staffId: 205,
+    staffName: 'أ. طارق فهد الحربي',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-04T15:00:00'),
+  },
   { staffId: 206, staffName: 'أ.د. هند خالد المالكي', status: PENDING },
 ]);
 chains.push(built.approvals);
 nextApprovalId = built.nextId;
 
 built = buildChain(1007, nextApprovalId, [
-  { staffId: 105, staffName: 'م. فيصل ناصر العنزي', status: APPROVED, decidedAt: new Date('2026-09-05T09:00:00') },
-  { staffId: 201, staffName: 'أ.د. سلطان علي العتيبي', status: APPROVED, decidedAt: new Date('2026-09-05T11:00:00') },
+  {
+    staffId: 105,
+    staffName: 'م. فيصل ناصر العنزي',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-05T09:00:00'),
+  },
+  {
+    staffId: 201,
+    staffName: 'أ.د. سلطان علي العتيبي',
+    status: APPROVED,
+    decidedAt: new Date('2026-09-05T11:00:00'),
+  },
   {
     staffId: 202,
     staffName: 'أ.د. منى عبدالعزيز الزهراني',

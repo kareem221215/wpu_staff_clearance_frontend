@@ -107,13 +107,21 @@ export const mockInterceptor: HttpInterceptorFn = (req, next) => {
     return ok({
       requestCount: REQUESTS.length,
       completedRequestCount: REQUESTS.filter((r) => r.completed).length,
-      OnGoingCount: REQUESTS.filter((r) => !r.completed).length,
+      archivedRequestCount: REQUESTS.filter((r) => r.archivedAt).length,
     });
   }
 
   // GET /requests
   if (req.method === 'GET' && path === '/requests') {
-    return ok({ data: REQUESTS, total: REQUESTS.length });
+    let results = REQUESTS;
+
+    const archivedParam = req.params.get('archived');
+    if (archivedParam !== null) {
+      const archived = archivedParam === 'true';
+      results = results.filter((r) => !!r.archivedAt === archived);
+    }
+
+    return ok({ data: results, total: results.length });
   }
 
   // GET /requests/one-by-staff/:staffId  — must come before /requests/:id

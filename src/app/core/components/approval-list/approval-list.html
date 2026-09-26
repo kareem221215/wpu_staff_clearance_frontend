@@ -1,0 +1,65 @@
+<p-table [loading]="loading()" [value]="approvals()" class="min-h-fit" dataKey="requestApprovalId">
+  <ng-template #emptymessage>
+    <tr>
+      <td colspan="3" class="text-center">لا يوجد مسؤولون بعد.</td>
+    </tr>
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th>
+        <div class="flex items-center gap-2">
+          <svg data-p-icon="user"></svg>
+          <span>المدير</span>
+        </div>
+      </th>
+
+      <th>
+        <div class="flex items-center gap-2">
+          <svg data-p-icon="building"></svg>
+          <span>الكلية</span>
+        </div>
+      </th>
+
+      <th class="text-center">
+        <div class="flex items-center justify-center gap-2">
+          <svg data-p-icon="bolt"></svg>
+          <span>الحالة</span>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-approval>
+    <tr>
+      <td>{{ approval.staffName }}</td>
+      <td>{{ approval.departmentName }}</td>
+
+      <td class="text-center">
+        @if (approval.status === RequestApprovalStatusEnum.APPROVED) {
+          <span class="text-green-700 font-medium">تمت الموافقة</span>
+        } @else if (approval.status === RequestApprovalStatusEnum.REJECTED) {
+          <div class="flex items-center justify-center gap-1">
+            <span class="text-red-600 font-medium">تم الرفض</span>
+            @if (approval.note) {
+              <button
+                type="button"
+                class="cursor-pointer text-zinc-500 hover:text-zinc-700"
+                (click)="notePopover.toggle($event)"
+              >
+                <svg data-p-icon="info-circle" [size]="18"></svg>
+              </button>
+              <p-popover #notePopover>
+                <div class="max-w-60 text-sm">{{ approval.note }}</div>
+              </p-popover>
+            }
+          </div>
+        } @else {
+          <div class="flex items-center justify-center">
+            <svg data-p-icon="spinner" [spin]="true" [size]="24"></svg>
+          </div>
+        }
+      </td>
+    </tr>
+  </ng-template>
+</p-table>

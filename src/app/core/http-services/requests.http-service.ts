@@ -12,6 +12,7 @@ import { RequestActionTypeEnum } from '../enums/request-action-type.enum';
 import { IHttpResponse } from '../../shared/interfaces/http-response.interface';
 
 interface IRequestsHttpFetchPayload {
+  readonly archived?: boolean;
   readonly collegeIds?: number[];
   readonly completed?: boolean;
   readonly incompleted?: boolean;
@@ -93,6 +94,12 @@ export class RequestsHttpService {
 
     if (payload.incompleted !== undefined) {
       params = params.append('incompleted', payload.incompleted);
+    }
+
+    if (payload.archived !== undefined) {
+      params = params.append('archived', payload.archived);
+    } else if (payload.completed === undefined && payload.incompleted === undefined) {
+      params = params.append('archived', false);
     }
 
     return params;

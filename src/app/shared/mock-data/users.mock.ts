@@ -3,14 +3,6 @@ import { UserStatusEnum } from '../enums/user-status.enum';
 import { UserTypeEnum } from '../enums/user-type.enum';
 import { IStaff } from '../../core/interfaces/staff.interface';
 
-// export interface IMockUser {
-//   readonly sub: number;
-//   readonly name: string;
-//   readonly username: string;
-//   readonly type: UserTypeEnum;
-//   readonly roles: UserRoleEnum[];
-// }
-
 // ─── Staff ───────────────────────────────────────────────────────────────────
 
 export const STAFF: IStaff[] = [
@@ -112,10 +104,6 @@ export const STAFF: IStaff[] = [
   },
 ];
 
-// ─── Direct Managers ─────────────────────────────────────────────────────────
-// One per department — always the first person to review a staff member's
-// request, before it moves on to the fixed managers below.
-
 export const DIRECT_MANAGERS: IStaff[] = [
   {
     staffId: 101,
@@ -178,11 +166,6 @@ export const DIRECT_MANAGERS: IStaff[] = [
     roles: [UserRoleEnum.DIRECT_MANAGERS],
   },
 ];
-
-// ─── Managers ─────────────────────────────────────────────────────────────────
-// Always the same 6 people, in the same order, for every request — regardless
-// of the requesting staff member's department: المكتبة المركزية، الشؤون
-// المالية، الرواتب والأجور، تكنولوجيا المعلومات، المستودع، ثم الموارد البشرية.
 
 export const MANAGERS: IStaff[] = [
   {

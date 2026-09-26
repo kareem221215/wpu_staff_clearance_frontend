@@ -31,7 +31,7 @@
       </div>
     } @else {
       <div class="flex flex-col gap-1">
-        <span class="font-medium text-shadow-xs text-primary">تفاصيل الطالب(ة):</span>
+        <span class="font-medium text-shadow-xs text-primary">تفاصيل الموظف(ة):</span>
         @if (staff()) {
           <div
             class="shadow-md border border-zinc-200 p-2 px-4 rounded-lg grid lg:grid-cols-3 gap-2 justify-between"
@@ -43,8 +43,8 @@
             </div>
             <div class="flex items-center gap-1">
               <svg data-p-icon="tags" class="text-primary-800"></svg>
-              <span>الرقم الجامعي:</span>
-              <span class="font-medium">{{ staff()!.uid }}</span>
+              <span>القسم:</span>
+              <span class="font-medium">{{ staff()!.collegeAlias }}</span>
             </div>
             <div class="flex items-center gap-1">
               <svg data-p-icon="building" class="text-primary-800"></svg>
@@ -56,49 +56,8 @@
       </div>
 
       <div class="flex flex-col gap-1">
-        <span class="font-medium text-primary text-shadow-xs">الاجراءات:</span>
-        <div class="flex flex-col gap-2">
-          @for (action of actions(); track $index) {
-            <div
-              class="gap-2 shadow-md border border-zinc-200 py-2 px-4 rounded-lg grid lg:grid-cols-2"
-              [ngClass]="{
-                'bg-green-600/10': isApproval(action),
-                'bg-red-600/10': isRejection(action),
-              }"
-            >
-              <div class="flex gap-2 items-center">
-                <svg data-p-icon="calendar" class="text-primary-800"></svg>
-                <span>الوقت:</span>
-                <span class="font-medium">
-                  {{ action.takenAt.toLocaleDateString() }} -
-                  {{ action.takenAt.toLocaleTimeString() }}
-                </span>
-              </div>
-
-              <div class="flex gap-2 items-center drop-shadow-md">
-                <svg data-p-icon="caret-left" class="text-surface-200 drop-shadow-xs"></svg>
-                <span>الإجراء:</span>
-                @if (isApproval(action)) {
-                  <span class="font-medium">تمت الموافقة</span>
-                  <svg data-p-icon="check-circle" class="text-green-800"></svg>
-                } @else if (isRejection(action)) {
-                  <span class="font-medium">تم الرفض</span>
-                  <svg data-p-icon="times-circle" class="text-red-500"></svg>
-                } @else {
-                  <span class="font-medium">تمت الأرشفة</span>
-                  <svg data-p-icon="folder"></svg>
-                }
-              </div>
-
-              @if (action.note) {
-                <div class="flex gap-2 items-center">
-                  <svg data-p-icon="note-sticky" class="text-primary-800"></svg>
-                  ملاحظات: {{ action.note }}
-                </div>
-              }
-            </div>
-          }
-        </div>
+        <span class="font-medium text-primary text-shadow-xs">حالة التوقيعات:</span>
+        <app-approval-list [approvals]="displayApprovals()" />
       </div>
     }
   </ng-template>
@@ -130,7 +89,7 @@
         <a
           pButton
           role="button"
-          [routerLink]="['request/print', request()!.requestId]"
+          [routerLink]="['/request/print', request()!.requestId]"
           (click)="close()"
         >
           <svg data-p-icon="print"></svg>

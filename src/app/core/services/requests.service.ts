@@ -86,7 +86,7 @@ export class RequestsService {
 
   openViewDialog(requestId: number) {
     return new Promise<boolean>((resolve) => {
-      const ref = this.#dialogService.open(DecisionView, {
+      const ref = this.#dialogService.open(RequestView, {
         closeOnEscape: true,
         dismissableMask: true,
         draggable: false,
