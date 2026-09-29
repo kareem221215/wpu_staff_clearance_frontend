@@ -97,39 +97,54 @@
         </td>
       } -->
 
-      <td class="space-x-2 text-center">
+      <td class="space-x-2 space-y-1 text-center">
         <button (click)="openViewDialog(request)" severity="secondary" size="small" pButton>
           <svg data-p-icon="eye"></svg>
           عرض
         </button>
 
-        @if (canApprove(request)) {
-          <button (click)="approve($event, request)" severity="success" size="small" pButton>
-            <svg data-p-icon="check-circle"></svg>
-            موافقة
-          </button>
-        }
+        <button
+          (click)="canApprove(request) && approve($event, request)"
+          [disabled]="!canApprove(request)"
+          severity="success"
+          size="small"
+          pButton
+        >
+          <svg data-p-icon="check-circle"></svg>
+          موافقة
+        </button>
 
-        @if (canReject(request)) {
-          <button pButton (click)="reject(request)" severity="danger" size="small">
-            <svg data-p-icon="times-circle"></svg>
-            رفض
-          </button>
-        }
+        <button
+          (click)="canReject(request) && reject(request)"
+          [disabled]="!canReject(request)"
+          severity="danger"
+          size="small"
+          pButton
+        >
+          <svg data-p-icon="times-circle"></svg>
+          رفض
+        </button>
 
-        @if (canArchive(request)) {
-          <button pButton (click)="archive($event, request)" severity="secondary" size="small">
-            <svg data-p-icon="folder"></svg>
-            أرشفة
-          </button>
-        }
+        <button
+          (click)="canArchive(request) && archive($event, request)"
+          [disabled]="!canArchive(request)"
+          severity="secondary"
+          size="small"
+          pButton
+        >
+          <svg data-p-icon="folder"></svg>
+          أرشفة
+        </button>
 
-        @if (canPrint(request)) {
-          <a pButton [routerLink]="['/request/print', request.requestId]" size="small">
-            <svg data-p-icon="print"></svg>
-            طباعة
-          </a>
-        }
+        <a
+          pButton
+          size="small"
+          [routerLink]="canPrint(request) ? ['/request/print', request.requestId] : null"
+          [class.locked-action]="!canPrint(request)"
+        >
+          <svg data-p-icon="print"></svg>
+          طباعة
+        </a>
       </td>
     </tr>
   </ng-template>

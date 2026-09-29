@@ -27,6 +27,11 @@ body {
     &:hover:not([disabled]) {
       @apply scale-104 shadow-lg ease-in;
     }
+
+    &:disabled,
+    &.locked-action {
+      @apply opacity-60  pointer-events-none shadow-none;
+    }
   }
 
   hr {
@@ -75,7 +80,7 @@ body {
     .p-datatable-thead {
       & > tr {
         & > th {
-          @apply bg-white/30 text-white text-shadow-md;
+          @apply bg-white/30 text-white text-shadow-md px-2;
 
           svg[data-p-icon] {
             @apply text-primary-500;
@@ -87,6 +92,10 @@ body {
     .p-datatable-tbody {
       & > tr {
         @apply bg-white/10 text-white/90 text-shadow-md;
+
+        & > td {
+          @apply px-5;
+        }
       }
     }
   }
