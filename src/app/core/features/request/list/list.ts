@@ -37,12 +37,11 @@ export class RequestList implements OnInit {
   constructor() {
     this.#activatedRoute.queryParams
       .pipe(takeUntilDestroyed())
-      .subscribe(({ archived, completed, departmentId, incompleted, skip, staffId }) => {
+      .subscribe(({ archived, completed, departmentId, skip, staffId }) => {
         this.filters.set({
           archived: archived ? archived === 'true' : undefined,
           departmentId: departmentId ? +departmentId : null,
           completed: completed ? completed === 'true' : undefined,
-          incompleted: incompleted ? incompleted === 'true' : undefined,
           skip: skip ? +skip : 0,
           staffId: staffId ? +staffId : null,
         });

@@ -4,13 +4,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ArrowRight } from '@primeicons/angular/arrow-right';
 import { Print } from '@primeicons/angular/print';
 import { ButtonDirective } from 'primeng/button';
-import { catchError, forkJoin, of, switchMap, tap } from 'rxjs';
+import { tap } from 'rxjs';
 import { RequestApprovalStatusEnum } from '../../../enums/request-approval-status.enum';
-import { RequestsHttpService } from '../../../http-services/requests.http-service';
 import { StaffHttpService } from '../../../http-services/staff.http-service';
 import { IRequestApproval } from '../../../interfaces/request-approval.interface';
 import { IRequest } from '../../../interfaces/request.interface';
 import { IStaff } from '../../../interfaces/staff.interface';
+import { deriveApprovals } from '../../../utils/pipeline.utils';
 
 const STATUS_LABEL: Record<RequestApprovalStatusEnum, string> = {
   [RequestApprovalStatusEnum.APPROVED]: 'تمت الموافقة',
@@ -25,8 +25,7 @@ const STATUS_LABEL: Record<RequestApprovalStatusEnum, string> = {
   imports: [ButtonDirective, NgClass, Print, ArrowRight],
 })
 export class RequestPrint implements OnInit {
-  readonly #activatedRroute = inject(ActivatedRoute);
-  readonly #requestsHttpService = inject(RequestsHttpService);
+  readonly #activatedRoute = inject(ActivatedRoute);
   readonly #staffHttpService = inject(StaffHttpService);
 
   readonly RequestApprovalStatusEnum = RequestApprovalStatusEnum;
@@ -42,33 +41,23 @@ export class RequestPrint implements OnInit {
   constructor(private location: Location) {}
 
   ngOnInit(): void {
-    const requestId = +this.#activatedRroute.snapshot.paramMap.get('requestId')!;
+    const routeState = window.history.state as { request?: IRequest };
+    const request = routeState?.request ?? null;
 
-    this.#requestsHttpService
-      .fetchById$(requestId)
-      .pipe(
-        tap((request) => {
-          this.request.set(request);
-        }),
-        switchMap((request) =>
-          forkJoin({
-            staff: this.#staffHttpService.fetchById$(request.staffId),
-            approvals: this.#requestsHttpService.fetchApprovals$(requestId),
-          }),
-        ),
-        tap(({ staff, approvals }) => {
-          this.staff.set(staff);
-          this.approvals.set([...approvals].sort((a, b) => a.order - b.order));
-        }),
-        catchError(() => {
-          this.error.set('لم يتم العثور على الطلب');
+    if (!request) {
+      this.error.set('لم يتم العثور على الطلب — يرجى فتح الطباعة من قائمة الطلبات');
+      this.loading.set(false);
 
-          return of(null);
-        }),
-      )
-      .subscribe(() => {
-        this.loading.set(false);
-      });
+      return;
+    }
+
+    this.request.set(request);
+    this.approvals.set([...deriveApprovals(request)].sort((a, b) => a.order - b.order));
+
+    this.#staffHttpService
+      .fetchById$(request.employeeId)
+      .pipe(tap((staff) => this.staff.set(staff)))
+      .subscribe(() => this.loading.set(false));
   }
 
   statusLabel(status: RequestApprovalStatusEnum) {

@@ -1,12 +1,15 @@
+import { UserRoleEnum } from '../../shared/enums/user-role.enum';
+import { IRequestAction } from './request-action.interface';
+
 export interface IRequest {
-  readonly approvedCount: number;
-  readonly archivedAt: Date | null;
+  readonly actions: IRequestAction[];
+  readonly archived: boolean;
+  readonly createdAt: string;
+  readonly departmentId: number;
   readonly departmentName: string;
-  readonly completed: boolean;
-  readonly directManagerId: number;
-  readonly directManagerName: string;
-  readonly nextApproverStaffId: number | null;
+  readonly employeeId: number;
+  readonly employeeName: string;
+  readonly nextActionRole: UserRoleEnum | null;
   readonly requestId: number;
-  readonly staffId: number;
-  readonly staffName: string;
+  readonly updatedAt: string;
 }

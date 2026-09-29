@@ -5,7 +5,6 @@ import { RouterLink } from '@angular/router';
 import { Ban } from '@primeicons/angular/ban';
 import { File } from '@primeicons/angular/file';
 import { Folder } from '@primeicons/angular/folder';
-import { GraduationCap } from '@primeicons/angular/graduation-cap';
 import { Spinner } from '@primeicons/angular/spinner';
 import { finalize } from 'rxjs';
 import { AuthService } from '../../../shared/services/auth.service';
@@ -14,7 +13,7 @@ import { ShellService } from '../../services/shell.service';
 
 @Component({
   templateUrl: './stats.html',
-  imports: [NgTemplateOutlet, RouterLink, Spinner, GraduationCap, File, Ban, Folder],
+  imports: [NgTemplateOutlet, RouterLink, Spinner, File, Ban, Folder],
   styleUrl: './stats.css',
 })
 export class Stats {

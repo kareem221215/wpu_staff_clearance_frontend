@@ -5,6 +5,7 @@
     <button
       (click)="startProcess()"
       [disabled]="creating()"
+      [loading]="creating()"
       pButton
       severity="secondary"
       size="small"

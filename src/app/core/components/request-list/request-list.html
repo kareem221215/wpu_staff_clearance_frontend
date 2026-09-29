@@ -11,7 +11,7 @@
 >
   <ng-template #emptymessage>
     <tr>
-      <td colspan="7" class="text-center">لم يتم العثور على أي طلب.</td>
+      <td colspan="5" class="text-center">لم يتم العثور على أي طلب.</td>
     </tr>
   </ng-template>
 
@@ -33,7 +33,7 @@
       <th>
         <div class="flex gap-2 items-center">
           <svg data-p-icon="building"></svg>
-          الكلية
+          القسم
         </div>
       </th>
 
@@ -43,13 +43,6 @@
           عدد الموافقات
         </div>
       </th>
-
-      <!-- <th class="text-nowrap">
-        <div class="flex gap-2 items-center">
-          <svg data-p-icon="cog"></svg>
-          بموجب رقم القرار
-        </div>
-      </th> -->
 
       <th class="text-center">
         <div class="flex items-center justify-center">
@@ -68,12 +61,12 @@
       <td class="text-nowrap">
         <div class="relative flex items-center">
           @if (canApprove(request) || canReject(request)) {
-            <span class="ps-4">{{ request.staffName }}</span>
+            <span class="ps-4">{{ request.employeeName }}</span>
             <span
               class="absolute inline-flex w-1.5 h-1.5 animate-ping rounded-full bg-red-600 opacity-75"
             ></span>
           } @else {
-            <span>{{ request.staffName }}</span>
+            <span>{{ request.employeeName }}</span>
           }
         </div>
       </td>
@@ -83,19 +76,8 @@
       </td>
 
       <td class="font-mono text-nowrap text-center">
-        {{ request.approvedCount }}
+        {{ approvedCount(request) }}
       </td>
-
-      <!-- @if (request.decisionId) {
-        <td class="text-nowrap">نعم ({{ request.decisionId }})</td>
-      } @else {
-        <td class="text-nowrap text-red-600">
-          <div class="flex gap-1 items-center">
-            <svg data-p-icon="exclamation-triangle"></svg>
-            فردي
-          </div>
-        </td>
-      } -->
 
       <td class="space-x-2 space-y-1 text-center">
         <button (click)="openViewDialog(request)" severity="secondary" size="small" pButton>
@@ -136,15 +118,15 @@
           أرشفة
         </button>
 
-        <a
+        <button
           pButton
           size="small"
-          [routerLink]="canPrint(request) ? ['/request/print', request.requestId] : null"
-          [class.locked-action]="!canPrint(request)"
+          [disabled]="!canPrint(request)"
+          (click)="canPrint(request) && navigateToPrint(request)"
         >
           <svg data-p-icon="print"></svg>
           طباعة
-        </a>
+        </button>
       </td>
     </tr>
   </ng-template>

@@ -32,13 +32,12 @@ export class DecisionView implements OnInit {
   });
 
   ngOnInit(): void {
-    this.requestListFilters.set({ ...this.requestListFilters(), decisionId: this.decisionId() });
-
     this.#decisionsHttpService
       .fetchById$(this.decisionId())
       .pipe(
         tap(({ data }) => {
           this.decision.set(data);
+          this.requestListFilters.set({ ...this.requestListFilters(), departmentId: data.departmentId });
         }),
         finalize(() => {
           this.loading.set(false);

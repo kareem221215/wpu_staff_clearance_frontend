@@ -146,8 +146,8 @@ export const appConfig: ApplicationConfig = {
     },
     {
       provide: STAFF_CLEARANCE_APIS_SERVICE_URL_TOKEN,
-      // useValue: 'http://172.25.3.20/wpu-staff-clearance/apis',
-      useValue: 'http://localhost:3000/wpu-staff-clearance/apis',
+      useValue: 'http://172.25.3.20/wpu-staff-clearance/apis',
+      // useValue: 'http://localhost:3000/wpu-staff-clearance/apis',
     },
     providePrimeNG({
       license:

@@ -12,7 +12,7 @@ export class AuthService {
   #accessToken$ = new BehaviorSubject<string | null>(null);
   #accessTokenPayload$ = new BehaviorSubject<IAccessTokenPayload | null>(null);
 
-  readonly adminRoles = Object.freeze([UserRoleEnum.ADMIN, UserRoleEnum.HUMAN_RESOURCES]);
+  readonly adminRoles = Object.freeze([UserRoleEnum.ADMIN, UserRoleEnum.HR_STAFF]);
   readonly superAdminRoles = Object.freeze([UserRoleEnum.ADMIN]);
 
   get accessToken() {

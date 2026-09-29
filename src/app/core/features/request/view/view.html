@@ -1,4 +1,4 @@
-<app-dialog-container [title]="'الطلب #' + requestId()" (close)="close()">
+<app-dialog-container [title]="'الطلب #' + request().requestId" (close)="close()">
   <ng-template #headerTpl>
     @if (loading()) {
       <p-message severity="info">
@@ -7,7 +7,7 @@
           <span>جاري التحميل</span>
         </div>
       </p-message>
-    } @else if (isCompleted(request()!)) {
+    } @else if (isCompleted(request())) {
       <p-message severity="success">
         <div class="flex gap-2 items-center">
           <svg data-p-icon="check-circle"></svg>
@@ -15,7 +15,7 @@
         </div>
       </p-message>
     } @else {
-      <p-message severity="warn" []>
+      <p-message severity="warn">
         <div class="flex gap-2 items-center">
           <svg data-p-icon="exclamation-triangle"></svg>
           <span>بانتظار استكمال الإجراءات </span>
@@ -62,39 +62,34 @@
     }
   </ng-template>
 
-  @if (!loading() && (isPermittedToTakeAction(request()!) || canPrint(request()!))) {
+  @if (!loading() && (isPermittedToTakeAction(request()) || canPrint(request()))) {
     <ng-template #footerTpl>
-      @if (canApprove(request()!)) {
+      @if (canApprove(request())) {
         <button pButton type="button" (click)="approve($event)" severity="success">
           <svg data-p-icon="check-circle"></svg>
           موافقة
         </button>
       }
 
-      @if (canReject(request()!)) {
+      @if (canReject(request())) {
         <button pButton type="button" (click)="reject()" severity="danger">
           <svg data-p-icon="times-circle"></svg>
           رفض
         </button>
       }
 
-      @if (canArchive(request()!)) {
+      @if (canArchive(request())) {
         <button pButton type="button" (click)="archive($event)" severity="secondary">
           <svg data-p-icon="folder"></svg>
           أرشفة
         </button>
       }
 
-      @if (canPrint(request()!)) {
-        <a
-          pButton
-          role="button"
-          [routerLink]="['/request/print', request()!.requestId]"
-          (click)="close()"
-        >
+      @if (canPrint(request())) {
+        <button pButton type="button" (click)="navigateToPrint()">
           <svg data-p-icon="print"></svg>
           طباعة
-        </a>
+        </button>
       }
     </ng-template>
   }

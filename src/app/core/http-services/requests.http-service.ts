@@ -4,19 +4,14 @@ import { IHttpFetchPayload } from '../../shared/interfaces/http-fetch-payload.in
 import { IHttpListResponse } from '../../shared/interfaces/http-list-response.interface';
 import { HttpService } from '../../shared/services/http.service';
 import { STAFF_CLEARANCE_APIS_SERVICE_URL_TOKEN } from '../../shared/tokens/staff-clearance-apis-service-url.token';
-import { IRequestApproval } from '../interfaces/request-approval.interface';
 import { IRequest } from '../interfaces/request.interface';
-import { map } from 'rxjs';
 import { RequestActionTypeEnum } from '../enums/request-action-type.enum';
-
-import { IHttpResponse } from '../../shared/interfaces/http-response.interface';
 
 interface IRequestsHttpFetchPayload {
   readonly archived?: boolean;
   readonly departmentIds?: number[];
   readonly completed?: boolean;
-  readonly incompleted?: boolean;
-  readonly staffIds?: number[];
+  readonly employeeIds?: number[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -38,45 +33,14 @@ export class RequestsHttpService {
     });
   }
 
-  fetchById$(requestId: number) {
-    return this.#httpClient.get<IRequest>(`${this.#baseUrl}/${requestId}`);
-  }
-
-  fetchBytaffId$(staffId: number) {
-    return this.#httpClient.get<IRequest>(`${this.#baseUrl}/one-by-staff/${staffId}`);
-  }
-
-  fetchApprovals$(requestId: number) {
-    return this.#httpClient.get<IRequestApproval[]>(`${this.#baseUrl}/${requestId}/approvals`).pipe(
-      map((approvals) =>
-        approvals.map(({ decidedAt, ...approval }) => ({
-          decidedAt: decidedAt ? new Date(decidedAt) : null,
-          ...approval,
-        })),
-      ),
-    );
-  }
-
-  // delete$(requestId: number) {
-  //   const url = [this.#baseUrl, requestId].join('/');
-
-  //   return this.#httpClient.delete<void>(url);
-  // }
-
-  approve$(requestId: number, approved = true, note: string | null = null) {
-    const url = [this.#baseUrl, requestId, 'approve'].join('/');
-
-    return this.#httpClient.post<void>(url, { approved, note });
-  }
-
   takeAction$(requestId: number, type: RequestActionTypeEnum, note: string | null = null) {
     const url = [this.#baseUrl, requestId, 'actions'].join('/');
 
     return this.#httpClient.post<void>(url, { type, note });
   }
 
-  create$(staffId: number) {
-    return this.#httpClient.post<void>(this.#baseUrl, { staffId });
+  create$() {
+    return this.#httpClient.post<void>(this.#baseUrl, {});
   }
 
   #handleRequestsHttpFetchPayload(params: HttpParams, payload: IRequestsHttpFetchPayload) {
@@ -84,21 +48,17 @@ export class RequestsHttpService {
       params = params.append('departmentIds', payload.departmentIds.join(','));
     }
 
-    if (payload.staffIds) {
-      params = params.append('staffIds', payload.staffIds.join(','));
+    if (payload.employeeIds) {
+      params = params.append('employeeIds', payload.employeeIds.join(','));
     }
 
     if (payload.completed !== undefined) {
       params = params.append('completed', payload.completed);
     }
 
-    if (payload.incompleted !== undefined) {
-      params = params.append('incompleted', payload.incompleted);
-    }
-
     if (payload.archived !== undefined) {
       params = params.append('archived', payload.archived);
-    } else if (payload.completed === undefined && payload.incompleted === undefined) {
+    } else if (payload.completed === undefined) {
       params = params.append('archived', false);
     }
 

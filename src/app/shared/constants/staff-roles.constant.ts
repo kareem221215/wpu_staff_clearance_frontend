@@ -1,11 +1,10 @@
 import { UserRoleEnum } from '../enums/user-role.enum';
 
-export const STAFF_ROLES = [
-  UserRoleEnum.PHARMACY_STAFF,
-  UserRoleEnum.IT_STAFF,
-  UserRoleEnum.ARCHITICTURE_STAFF,
-  UserRoleEnum.DENTISTRY_STAFF,
-  UserRoleEnum.CIVIL_ENGINEER_STAFF,
-  UserRoleEnum.CENTRAL_AFFAIRS_STAFF,
-  UserRoleEnum.MAIN_BUILDING_STAFF,
+export const PIPELINE_ROLES = [
+  UserRoleEnum.STOREKEEPER,
+  UserRoleEnum.IT_MANAGER,
+  UserRoleEnum.ACCOUNTING_STAFF_STAFF,
+  UserRoleEnum.ACCOUNTING_MANAGER,
+  UserRoleEnum.CENTRAL_LIBRARY_MANAGER,
+  UserRoleEnum.HR_STAFF,
 ];

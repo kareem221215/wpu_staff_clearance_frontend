@@ -42,3 +42,7 @@ __screenshots__/
 # System files
 .DS_Store
 Thumbs.db
+
+# Mock data (dev only, not needed for production)
+/src/mocks/
+/src/app/shared/mock-data/

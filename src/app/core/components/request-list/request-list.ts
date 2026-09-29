@@ -1,6 +1,6 @@
 import { NgClass } from '@angular/common';
 import { Component, inject, model, OnChanges, signal, SimpleChanges } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { Bolt } from '@primeicons/angular/bolt';
 import { Building } from '@primeicons/angular/building';
 import { CheckCircle } from '@primeicons/angular/check-circle';
@@ -8,6 +8,7 @@ import { Eye } from '@primeicons/angular/eye';
 import { Folder } from '@primeicons/angular/folder';
 import { GraduationCap } from '@primeicons/angular/graduation-cap';
 import { Hashtag } from '@primeicons/angular/hashtag';
+import { Print } from '@primeicons/angular/print';
 import { TimesCircle } from '@primeicons/angular/times-circle';
 import { ButtonDirective } from 'primeng/button';
 import { Table, TableLazyLoadEvent } from 'primeng/table';
@@ -16,14 +17,11 @@ import { IHttpListResponse } from '../../../shared/interfaces/http-list-response
 import { RequestsHttpService } from '../../http-services/requests.http-service';
 import { IRequest } from '../../interfaces/request.interface';
 import { RequestsService } from '../../services/requests.service';
-import { Print } from '@primeicons/angular/print';
 
 export interface IRequestListFilters {
   readonly archived?: boolean;
   readonly departmentId: number | null;
   readonly completed?: boolean;
-  readonly decisionId?: number;
-  readonly incompleted?: boolean;
   readonly skip: number;
   readonly staffId: number | null;
 }
@@ -40,7 +38,6 @@ export interface IRequestListFilters {
     Hashtag,
     NgClass,
     Print,
-    RouterLink,
     Table,
     TimesCircle,
   ],
@@ -51,6 +48,7 @@ export interface IRequestListFilters {
 export class RequestListTable implements OnChanges {
   readonly #requestsHttpService = inject(RequestsHttpService);
   readonly #requestsService = inject(RequestsService);
+  readonly #router = inject(Router);
 
   readonly filters = model<IRequestListFilters>({
     departmentId: null,
@@ -92,7 +90,7 @@ export class RequestListTable implements OnChanges {
     this.#requestsHttpService
       .fetch$({
         ...filters,
-        staffIds: staffId ? [staffId] : undefined,
+        employeeIds: staffId ? [staffId] : undefined,
         take: this.pageSize,
       })
       .pipe(
@@ -106,11 +104,17 @@ export class RequestListTable implements OnChanges {
       .subscribe();
   }
 
-  protected openViewDialog({ requestId }: IRequest) {
-    this.#requestsService.openViewDialog(requestId).then((payload: boolean) => {
+  protected openViewDialog(request: IRequest) {
+    this.#requestsService.openViewDialog(request).then((payload: boolean) => {
       if (payload) {
         this.fetch();
       }
+    });
+  }
+
+  protected navigateToPrint(request: IRequest) {
+    this.#router.navigate(['/request/print', request.requestId], {
+      state: { request },
     });
   }
 
@@ -132,6 +136,10 @@ export class RequestListTable implements OnChanges {
         this.fetch();
       }
     });
+  }
+
+  protected approvedCount(request: IRequest) {
+    return request.actions.filter((a) => a.type === 'approve').length;
   }
 
   protected canApprove(request: IRequest) {

@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { DialogService } from 'primeng/dynamicdialog';
 import { UserRoleEnum } from '../../shared/enums/user-role.enum';
-import { STAFF_ROLES } from '../../shared/constants/staff-roles.constant';
 import { AuthService } from '../../shared/services/auth.service';
 import { RequestReject } from '../features/request/reject/reject';
 import { RequestActionTypeEnum } from '../enums/request-action-type.enum';
@@ -84,7 +83,7 @@ export class RequestsService {
     });
   }
 
-  openViewDialog(requestId: number) {
+  openViewDialog(request: IRequest) {
     return new Promise<boolean>((resolve) => {
       const ref = this.#dialogService.open(RequestView, {
         closeOnEscape: true,
@@ -94,7 +93,7 @@ export class RequestsService {
         showHeader: false,
         width: '48rem',
         closable: true,
-        inputValues: { requestId },
+        inputValues: { request },
       })!;
 
       ref.onClose.subscribe((payload: boolean) => {
@@ -114,18 +113,18 @@ export class RequestsService {
   canArchive(request: IRequest) {
     return (
       this.isCompleted(request) &&
-      !request.archivedAt &&
-      this.#authService.hasRoles([UserRoleEnum.HUMAN_RESOURCES])
+      !request.archived &&
+      this.#authService.hasRoles([UserRoleEnum.HR_STAFF])
     );
   }
 
   canCreate() {
-    return this.#authService.hasRoles(STAFF_ROLES);
+    return this.#authService.isStaff;
   }
 
   canPrint(request: IRequest) {
     return (
-      this.#authService.hasRoles([UserRoleEnum.HUMAN_RESOURCES]) &&
+      this.#authService.hasRoles([UserRoleEnum.HR_STAFF]) &&
       (this.isCompleted(request) || this.#isMyTurn(request))
     );
   }
@@ -135,10 +134,12 @@ export class RequestsService {
   }
 
   isCompleted(request: IRequest) {
-    return request.nextApproverStaffId === null;
+    return request.nextActionRole === null;
   }
 
-  #isMyTurn({ nextApproverStaffId }: IRequest) {
-    return nextApproverStaffId !== null && nextApproverStaffId === this.#authService.staffId;
+  #isMyTurn({ nextActionRole }: IRequest) {
+    if (!nextActionRole) return false;
+
+    return this.#authService.hasRoles([nextActionRole]);
   }
 }

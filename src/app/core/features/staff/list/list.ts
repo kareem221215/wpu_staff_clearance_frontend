@@ -16,6 +16,7 @@ import { IRequestApproval } from '../../../interfaces/request-approval.interface
 import { IStaff } from '../../../interfaces/staff.interface';
 import { RequestsService } from '../../../services/requests.service';
 import { ShellService } from '../../../services/shell.service';
+import { deriveApprovals } from '../../../utils/pipeline.utils';
 
 @Component({
   imports: [ApprovalList, ButtonDirective, FormsModule, Send],
@@ -89,7 +90,7 @@ export class StaffList implements OnInit {
 
   ngOnInit(): void {
     this.#shellService.setToolbarTpl(this.toolbarTpl());
-    this.#fetchApprovals();
+    this.#fetchMyRequest();
 
     this.#staffHttpService.fetchById$(this.staffId()!).subscribe((staff) => {
       this.myDepartmentId.set(staff?.departmentId ?? null);
@@ -123,11 +124,11 @@ export class StaffList implements OnInit {
     this.creating.set(true);
 
     this.#requestsHttpService
-      .create$(this.staffId()!)
+      .create$()
       .pipe(finalize(() => this.creating.set(false)))
       .subscribe(() => {
         this.fetch();
-        this.#fetchApprovals();
+        this.#fetchMyRequest();
       });
   }
 
@@ -135,13 +136,20 @@ export class StaffList implements OnInit {
     return this.#requestsService.canCreate();
   }
 
-  #fetchApprovals() {
+  #fetchMyRequest() {
+    const employeeId = this.staffId();
+
+    if (!employeeId) return;
+
     this.#requestsHttpService
-      .fetchBytaffId$(this.staffId()!)
+      .fetch$({ employeeIds: [employeeId], take: 1 })
       .pipe(
-        switchMap((request) => {
+        switchMap(({ data }) => {
+          const request = data[0];
+
           if (!request) return of([]);
-          return this.#requestsHttpService.fetchApprovals$(request.requestId);
+
+          return of(deriveApprovals(request));
         }),
         tap((approvals) => this.approvals.set(approvals)),
       )
