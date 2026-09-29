@@ -20,7 +20,7 @@ import { Print } from '@primeicons/angular/print';
 
 export interface IRequestListFilters {
   readonly archived?: boolean;
-  readonly collegeId: number | null;
+  readonly departmentId: number | null;
   readonly completed?: boolean;
   readonly decisionId?: number;
   readonly incompleted?: boolean;
@@ -53,7 +53,7 @@ export class RequestListTable implements OnChanges {
   readonly #requestsService = inject(RequestsService);
 
   readonly filters = model<IRequestListFilters>({
-    collegeId: null,
+    departmentId: null,
     skip: 0,
     staffId: null,
   });

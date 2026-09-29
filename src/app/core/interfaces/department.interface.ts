@@ -1,6 +1,6 @@
-export interface ICollege {
+export interface IDepartment {
   readonly alias: string;
-  readonly collegeId: number;
+  readonly departmentId: number;
   readonly name: string;
   readonly directManagerId: number;
 }

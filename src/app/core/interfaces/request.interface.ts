@@ -1,7 +1,7 @@
 export interface IRequest {
   readonly approvedCount: number;
   readonly archivedAt: Date | null;
-  readonly collegeName: string;
+  readonly departmentName: string;
   readonly completed: boolean;
   readonly directManagerId: number;
   readonly directManagerName: string;

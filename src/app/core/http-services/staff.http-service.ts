@@ -16,11 +16,11 @@ export class StaffHttpService {
   readonly #baseUrl = `${this.#docsApisServiceUrl}/staff`;
   readonly #managersUrl = `${this.#docsApisServiceUrl}/managers`;
 
-  fetch$(payload: IHttpFetchPayload & { collegeIds?: number[] }) {
+  fetch$(payload: IHttpFetchPayload & { departmentIds?: number[] }) {
     let params = this.#httpService.fetchPayloadToParams(payload);
 
-    if (payload.collegeIds) {
-      params = params.append('collegeIds', payload.collegeIds.join(','));
+    if (payload.departmentIds) {
+      params = params.append('departmentIds', payload.departmentIds.join(','));
     }
 
     return this.#httpClient.get<IHttpListResponse<IStaff>>(this.#baseUrl, {
@@ -29,11 +29,11 @@ export class StaffHttpService {
     });
   }
 
-  fetchManagers$(payload: IHttpFetchPayload & { collegeIds?: number[] }) {
+  fetchManagers$(payload: IHttpFetchPayload & { departmentIds?: number[] }) {
     let params = this.#httpService.fetchPayloadToParams(payload);
 
-    if (payload.collegeIds) {
-      params = params.append('collegeIds', payload.collegeIds.join(','));
+    if (payload.departmentIds) {
+      params = params.append('departmentIds', payload.departmentIds.join(','));
     }
 
     return this.#httpClient.get<IHttpListResponse<IStaff>>(this.#managersUrl, {

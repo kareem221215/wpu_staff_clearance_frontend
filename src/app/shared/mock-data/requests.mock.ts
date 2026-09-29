@@ -3,20 +3,15 @@ import { IRequest } from '../../core/interfaces/request.interface';
 import { IRequestApproval } from '../../core/interfaces/request-approval.interface';
 import { DIRECT_MANAGERS, MANAGERS } from './users.mock';
 
-// One request per stage of the pipeline, so every state is exercisable
-// locally without a backend: not started (staffId 3 has none at all),
-// rejected right at the direct manager, early / mid progress through the 6
-// fixed managers, rejected mid-chain, waiting on HR (the last of the 7),
-// completed-but-not-archived, and completed-and-archived.
 export const REQUESTS: IRequest[] = [
   // Pharmacy staff — direct manager approved, now waiting on the first fixed manager (library).
   {
     requestId: 1001,
     staffId: 1,
     staffName: 'محمد رئيف الرفاعي',
-    directManagerId: 101,
-    directManagerName: 'د. خالد إبراهيم السعيد',
-    collegeName: 'كلية الصيدلة',
+    directManagerId: 101, //delete
+    directManagerName: 'د. خالد إبراهيم السعيد', //delete
+    departmentName: 'كلية الصيدلة', //id
     approvedCount: 1,
     completed: false,
     archivedAt: null,
@@ -29,7 +24,7 @@ export const REQUESTS: IRequest[] = [
     staffName: 'سارة عبدالله الحربي',
     directManagerId: 102,
     directManagerName: 'د. نورة محمد الشمري',
-    collegeName: 'كلية تقنية المعلومات',
+    departmentName: 'كلية تقنية المعلومات',
     approvedCount: 0,
     completed: false,
     archivedAt: null,
@@ -42,7 +37,7 @@ export const REQUESTS: IRequest[] = [
     staffName: 'عمر سعد القحطاني',
     directManagerId: 105,
     directManagerName: 'م. فيصل ناصر العنزي',
-    collegeName: 'كلية الهندسة المدنية',
+    departmentName: 'كلية الهندسة المدنية',
     approvedCount: 7,
     completed: true,
     archivedAt: new Date('2026-08-26T09:00:00'),
@@ -55,7 +50,7 @@ export const REQUESTS: IRequest[] = [
     staffName: 'فاطمة يوسف العمري',
     directManagerId: 104,
     directManagerName: 'د. لمى سعود القرني',
-    collegeName: 'كلية طب الأسنان',
+    departmentName: 'كلية طب الأسنان',
     approvedCount: 3,
     completed: false,
     archivedAt: null,
@@ -68,7 +63,7 @@ export const REQUESTS: IRequest[] = [
     staffName: 'ريم فهد العصيمي',
     directManagerId: 101,
     directManagerName: 'د. خالد إبراهيم السعيد',
-    collegeName: 'كلية الصيدلة',
+    departmentName: 'كلية الصيدلة',
     approvedCount: 7,
     completed: true,
     archivedAt: null,
@@ -81,7 +76,7 @@ export const REQUESTS: IRequest[] = [
     staffName: 'ماجد سالم القحطاني',
     directManagerId: 102,
     directManagerName: 'د. نورة محمد الشمري',
-    collegeName: 'كلية تقنية المعلومات',
+    departmentName: 'كلية تقنية المعلومات',
     approvedCount: 6,
     completed: false,
     archivedAt: null,
@@ -94,7 +89,7 @@ export const REQUESTS: IRequest[] = [
     staffName: 'هيا عبدالله الشهري',
     directManagerId: 105,
     directManagerName: 'م. فيصل ناصر العنزي',
-    collegeName: 'كلية الهندسة المدنية',
+    departmentName: 'كلية الهندسة المدنية',
     approvedCount: 2,
     completed: false,
     archivedAt: null,
@@ -102,10 +97,10 @@ export const REQUESTS: IRequest[] = [
   },
 ];
 
-// Each approver's own office/college name, for the "اسم المديرية / الكلية"
+// Each approver's own office/department name, for the "اسم المديرية / الكلية"
 // print column — e.g. the library manager's row prints "المكتبة المركزية".
 const DEPARTMENT_NAME_BY_STAFF_ID = new Map(
-  [...DIRECT_MANAGERS, ...MANAGERS].map((manager) => [manager.staffId, manager.collegeName]),
+  [...DIRECT_MANAGERS, ...MANAGERS].map((manager) => [manager.staffId, manager.departmentName]),
 );
 
 function buildChain(

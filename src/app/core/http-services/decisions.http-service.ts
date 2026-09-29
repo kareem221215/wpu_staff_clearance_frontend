@@ -10,7 +10,7 @@ import { IDecision } from '../interfaces/decision.interface';
 import { IRequestCreate } from '../interfaces/request-create.interface';
 
 interface IDecisionsHttpFetchPayload {
-  readonly collegeIds?: number[];
+  readonly departmentIds?: number[];
 }
 
 @Injectable({ providedIn: 'root' })
@@ -43,13 +43,13 @@ export class DecisionsHttpService {
     return this.#httpClient.get<IHttpResponse<IDecision>>(`${this.#baseUrl}/${decisionId}`);
   }
 
-  create$(collegeId: number, data: IRequestCreate[]) {
-    return this.#httpClient.post<void>(this.#baseUrl, { collegeId, requests: data });
+  create$(departmentId: number, data: IRequestCreate[]) {
+    return this.#httpClient.post<void>(this.#baseUrl, { departmentId, requests: data });
   }
 
   #handleDecisionsHttpFetchPayload(params: HttpParams, payload: IDecisionsHttpFetchPayload) {
-    if (payload.collegeIds) {
-      params = params.append('collegeIds', payload.collegeIds.join(','));
+    if (payload.departmentIds) {
+      params = params.append('departmentIds', payload.departmentIds.join(','));
     }
 
     return params;

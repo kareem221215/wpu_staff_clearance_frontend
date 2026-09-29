@@ -8,9 +8,9 @@ export interface IStaff {
   readonly uid: string;
   readonly staffId: number;
   readonly hasRequest: boolean;
-  readonly collegeName: string;
-  readonly collegeAlias: string;
-  readonly collegeId: number;
+  readonly departmentName: string;
+  readonly departmentAlias: string;
+  readonly departmentId: number;
   readonly type: UserTypeEnum;
   readonly roles: UserRoleEnum[];
   readonly requestId?: number;

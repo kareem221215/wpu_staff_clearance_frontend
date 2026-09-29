@@ -4,22 +4,22 @@ import { of } from 'rxjs';
 import { CACHE_HTTP_CONTEXT_TOKEN } from '../../shared/http-context-tokens/cache.http-context-token';
 import { AuthService } from '../../shared/services/auth.service';
 import { GATE_APIS_SERVICE_URL_TOKEN } from '../../shared/tokens/gate-apis-service-url.token';
-import { ICollege } from '../interfaces/college.interface';
+import { IDepartment } from '../interfaces/department.interface';
 
 @Injectable({ providedIn: 'root' })
-export class CollegesHttpService {
+export class DepartmentsHttpService {
   readonly #authService = inject(AuthService);
   readonly #httpClient = inject(HttpClient);
   readonly #gateApisServiceUrl = inject(GATE_APIS_SERVICE_URL_TOKEN);
 
-  readonly #baseUrl = `${this.#gateApisServiceUrl}/colleges`;
+  readonly #baseUrl = `${this.#gateApisServiceUrl}/department`;
 
   fetch$() {
     if (!this.#authService.isAdmin) {
       return of([]);
     }
 
-    return this.#httpClient.get<ICollege[]>(this.#baseUrl, {
+    return this.#httpClient.get<IDepartment[]>(this.#baseUrl, {
       context: new HttpContext().set(CACHE_HTTP_CONTEXT_TOKEN, true),
     });
   }

@@ -43,12 +43,15 @@ body {
     .p-dialog-content {
       @apply flex flex-col;
     }
-    .p-datatable-thead > tr > th {
-      @apply bg-surface-100 text-zinc-800 text-shadow-none;
-    }
 
-    .p-datatable-tbody > tr {
-      @apply bg-transparent text-zinc-800 !ext-shadow-none;
+    .p-datatable {
+      .p-datatable-thead > tr > th {
+        @apply bg-surface-100 text-zinc-800 text-shadow-none;
+      }
+
+      .p-datatable-tbody > tr {
+        @apply bg-transparent text-zinc-800 text-shadow-none;
+      }
     }
   }
 

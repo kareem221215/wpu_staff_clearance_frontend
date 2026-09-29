@@ -26,7 +26,7 @@ export class DecisionView implements OnInit {
   readonly loading = signal(true);
   readonly decision = signal<IDecision | null>(null);
   readonly requestListFilters = signal<IRequestListFilters>({
-    collegeId: null,
+    departmentId: null,
     skip: 0,
     staffId: null,
   });

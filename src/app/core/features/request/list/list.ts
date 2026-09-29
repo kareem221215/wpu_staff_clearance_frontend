@@ -27,7 +27,7 @@ export class RequestList implements OnInit {
   readonly isAdmin = toSignal(this.#authService.isAdmin$);
 
   readonly filters = signal<IRequestListFilters>({
-    collegeId: null,
+    departmentId: null,
     skip: 0,
     staffId: null,
   });
@@ -37,10 +37,10 @@ export class RequestList implements OnInit {
   constructor() {
     this.#activatedRoute.queryParams
       .pipe(takeUntilDestroyed())
-      .subscribe(({ archived, completed, collegeId, incompleted, skip, staffId }) => {
+      .subscribe(({ archived, completed, departmentId, incompleted, skip, staffId }) => {
         this.filters.set({
           archived: archived ? archived === 'true' : undefined,
-          collegeId: collegeId ? +collegeId : null,
+          departmentId: departmentId ? +departmentId : null,
           completed: completed ? completed === 'true' : undefined,
           incompleted: incompleted ? incompleted === 'true' : undefined,
           skip: skip ? +skip : 0,
@@ -53,7 +53,7 @@ export class RequestList implements OnInit {
     this.#shellService.setToolbarTpl(this.toolbarTpl());
   }
 
-  onSearch(prop: 'collegeId' | 'staffId', val: number | null) {
+  onSearch(prop: 'departmentId' | 'staffId', val: number | null) {
     this.#navigate({ [prop]: val || undefined, skip: undefined });
   }
 

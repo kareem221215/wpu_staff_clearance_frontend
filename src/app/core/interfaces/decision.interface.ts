@@ -1,5 +1,5 @@
 export interface IDecision {
-  readonly collegeId: number;
+  readonly departmentId: number;
   readonly createdAt: Date;
   readonly createdBy: number;
   readonly decisionId: number;

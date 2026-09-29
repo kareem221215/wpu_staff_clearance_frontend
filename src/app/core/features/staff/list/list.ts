@@ -39,12 +39,12 @@ export class StaffList implements OnInit {
 
   readonly isAdmin = toSignal(this.#authService.isAdmin$);
 
-  readonly myCollegeId = signal<number | null | undefined>(undefined);
+  readonly myDepartmentId = signal<number | null | undefined>(undefined);
 
   readonly staffId = signal<number | null>(null);
 
-  readonly searchModel = signal<{ collegeId: number | null; searchTxt: string }>({
-    collegeId: null,
+  readonly searchModel = signal<{ departmentId: number | null; searchTxt: string }>({
+    departmentId: null,
     searchTxt: '',
   });
 
@@ -63,7 +63,7 @@ export class StaffList implements OnInit {
       order: index + 1,
       staffId: manager.staffId,
       staffName: manager.name,
-      departmentName: manager.collegeName,
+      departmentName: manager.departmentName,
       status: RequestApprovalStatusEnum.PENDING,
       note: null,
       decidedAt: null,
@@ -73,15 +73,15 @@ export class StaffList implements OnInit {
   constructor() {
     this.#activatedRoute.queryParams
       .pipe(takeUntilDestroyed())
-      .subscribe(({ collegeId, searchTxt, staffId }) => {
+      .subscribe(({ departmentId, searchTxt, staffId }) => {
         this.searchModel.set({
-          collegeId: collegeId ? +collegeId : null,
+          departmentId: departmentId ? +departmentId : null,
           searchTxt: searchTxt || '',
         });
 
         this.staffId.set(staffId ? +staffId : this.#authService.staffId!);
 
-        if (this.myCollegeId() !== undefined) {
+        if (this.myDepartmentId() !== undefined) {
           this.fetch();
         }
       });
@@ -92,7 +92,7 @@ export class StaffList implements OnInit {
     this.#fetchApprovals();
 
     this.#staffHttpService.fetchById$(this.staffId()!).subscribe((staff) => {
-      this.myCollegeId.set(staff?.collegeId ?? null);
+      this.myDepartmentId.set(staff?.departmentId ?? null);
       this.fetch();
     });
   }
@@ -100,12 +100,12 @@ export class StaffList implements OnInit {
   fetch() {
     this.loading.set(true);
 
-    const { collegeId, searchTxt } = this.searchModel();
-    const effectiveCollegeId = collegeId ?? this.myCollegeId() ?? null;
+    const { departmentId, searchTxt } = this.searchModel();
+    const effectivedepartmentId = departmentId ?? this.myDepartmentId() ?? null;
 
     this.#staffHttpService
       .fetchManagers$({
-        collegeIds: effectiveCollegeId ? [effectiveCollegeId] : undefined,
+        departmentIds: effectivedepartmentId ? [effectivedepartmentId] : undefined,
         searchTxt: searchTxt || undefined,
       })
       .pipe(

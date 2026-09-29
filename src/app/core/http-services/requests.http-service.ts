@@ -13,7 +13,7 @@ import { IHttpResponse } from '../../shared/interfaces/http-response.interface';
 
 interface IRequestsHttpFetchPayload {
   readonly archived?: boolean;
-  readonly collegeIds?: number[];
+  readonly departmentIds?: number[];
   readonly completed?: boolean;
   readonly incompleted?: boolean;
   readonly staffIds?: number[];
@@ -80,8 +80,8 @@ export class RequestsHttpService {
   }
 
   #handleRequestsHttpFetchPayload(params: HttpParams, payload: IRequestsHttpFetchPayload) {
-    if (payload.collegeIds) {
-      params = params.append('collegeIds', payload.collegeIds.join(','));
+    if (payload.departmentIds) {
+      params = params.append('departmentIds', payload.departmentIds.join(','));
     }
 
     if (payload.staffIds) {
