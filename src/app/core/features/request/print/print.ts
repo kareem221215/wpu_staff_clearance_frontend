@@ -9,7 +9,6 @@ import { RequestApprovalStatusEnum } from '../../../enums/request-approval-statu
 import { StaffHttpService } from '../../../http-services/staff.http-service';
 import { IRequest } from '../../../interfaces/request.interface';
 import { IStaff } from '../../../interfaces/staff.interface';
-import { DepartmentsService } from '../../../services/departments.service';
 import { deriveApprovals } from '../../../utils/pipeline.utils';
 
 const STATUS_LABEL: Record<RequestApprovalStatusEnum, string> = {
@@ -26,7 +25,6 @@ const STATUS_LABEL: Record<RequestApprovalStatusEnum, string> = {
 })
 export class RequestPrint implements OnInit {
   readonly #activatedRoute = inject(ActivatedRoute);
-  readonly #departmentsService = inject(DepartmentsService);
   readonly #staffHttpService = inject(StaffHttpService);
 
   readonly RequestApprovalStatusEnum = RequestApprovalStatusEnum;
@@ -40,9 +38,7 @@ export class RequestPrint implements OnInit {
 
     if (!request) return [];
 
-    const directManagerId = this.#departmentsService.directManagerIdFor(request.departmentId);
-
-    return deriveApprovals(request, directManagerId).sort((a, b) => a.order - b.order);
+    return deriveApprovals(request).sort((a, b) => a.order - b.order);
   });
 
   readonly printDate = signal(new Date().toISOString().split('T')[0]);

@@ -15,7 +15,6 @@ import { StaffHttpService } from '../../../http-services/staff.http-service';
 import { IRequest } from '../../../interfaces/request.interface';
 import { IRequestApproval } from '../../../interfaces/request-approval.interface';
 import { IStaff } from '../../../interfaces/staff.interface';
-import { DepartmentsService } from '../../../services/departments.service';
 import { RequestsService } from '../../../services/requests.service';
 import { ShellService } from '../../../services/shell.service';
 import { deriveApprovals } from '../../../utils/pipeline.utils';
@@ -28,7 +27,6 @@ import { deriveApprovals } from '../../../utils/pipeline.utils';
 export class StaffList implements OnInit {
   readonly #activatedRoute = inject(ActivatedRoute);
   readonly #authService = inject(AuthService);
-  readonly #departmentsService = inject(DepartmentsService);
   readonly #requestsHttpService = inject(RequestsHttpService);
   readonly #requestsService = inject(RequestsService);
   readonly #shellService = inject(ShellService);
@@ -58,9 +56,7 @@ export class StaffList implements OnInit {
     const request = this.myRequest();
 
     if (request) {
-      const directManagerId = this.#departmentsService.directManagerIdFor(request.departmentId);
-
-      return deriveApprovals(request, directManagerId).sort((a, b) => a.order - b.order);
+        return deriveApprovals(request).sort((a, b) => a.order - b.order);
     }
 
     return this.staff().data.map((manager, index) => ({
