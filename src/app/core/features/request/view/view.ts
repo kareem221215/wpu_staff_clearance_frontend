@@ -61,7 +61,10 @@ export class RequestView {
     const request = this.request();
     const directManagerId = this.#departmentsService.directManagerIdFor(request.departmentId);
 
-    return deriveApprovals(request, directManagerId);
+    // Only show the steps someone has actually approved or rejected.
+    return deriveApprovals(request, directManagerId).filter(
+      (approval) => approval.status !== RequestApprovalStatusEnum.PENDING,
+    );
   });
 
   close() {
