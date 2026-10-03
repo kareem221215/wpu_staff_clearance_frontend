@@ -2,7 +2,7 @@ FROM node:24-alpine AS build
 
 WORKDIR /src
 
-RUN npm install -g npm
+RUN npm install -g npm@12.1
 
 RUN npm install -g @angular/cli@22
 
