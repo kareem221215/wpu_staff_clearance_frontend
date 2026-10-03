@@ -30,7 +30,11 @@ export function deriveApprovals(
 
   const nonArchiveActions = request.actions.filter((a) => a.type !== RequestActionTypeEnum.ARCHIVE);
 
-  const dmAction = nonArchiveActions.find((a) => a.takenById === directManagerId);
+  // Match the direct manager by id when we know it; otherwise fall back to the action taken
+  // under a role outside the fixed pipeline, since the direct manager is the only such approver.
+  const dmAction =
+    nonArchiveActions.find((a) => directManagerId !== null && a.takenById === directManagerId) ??
+    nonArchiveActions.find((a) => !PIPELINE_ORDER.includes(a.role));
   const pipelineActions = nonArchiveActions.filter((a) => a !== dmAction);
 
   let dmStatus: RequestApprovalStatusEnum;
