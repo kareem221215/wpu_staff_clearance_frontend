@@ -22,12 +22,16 @@ export const ROLE_LABEL: Record<string, string> = {
   [UserRoleEnum.HR_STAFF]: 'الموارد البشرية',
 };
 
-export function deriveApprovals(request: IRequest): IRequestApproval[] {
+export function deriveApprovals(
+  request: IRequest,
+  directManagerId: number | null = null,
+): IRequestApproval[] {
   const DIRECT_MANAGER_LABEL = 'المدير المباشر';
 
-  const dmAction = request.actions.find(
-    (a) => !PIPELINE_ORDER.includes(a.role) && a.type !== RequestActionTypeEnum.ARCHIVE,
-  );
+  const nonArchiveActions = request.actions.filter((a) => a.type !== RequestActionTypeEnum.ARCHIVE);
+
+  const dmAction = nonArchiveActions.find((a) => a.takenById === directManagerId);
+  const pipelineActions = nonArchiveActions.filter((a) => a !== dmAction);
 
   let dmStatus: RequestApprovalStatusEnum;
   if (dmAction?.type === RequestActionTypeEnum.APPROVE) {
@@ -51,9 +55,7 @@ export function deriveApprovals(request: IRequest): IRequestApproval[] {
   };
 
   const pipelineSteps = PIPELINE_ORDER.map((role, index) => {
-    const action = request.actions.find(
-      (a) => a.role === role && a.type !== RequestActionTypeEnum.ARCHIVE,
-    );
+    const action = pipelineActions.find((a) => a.role === role);
 
     let status: RequestApprovalStatusEnum;
     if (action?.type === RequestActionTypeEnum.APPROVE) {

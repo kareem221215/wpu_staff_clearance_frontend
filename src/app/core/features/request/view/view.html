@@ -1,13 +1,6 @@
 <app-dialog-container [title]="'الطلب #' + request().requestId" (close)="close()">
   <ng-template #headerTpl>
-    @if (loading()) {
-      <p-message severity="info">
-        <div class="flex gap-2 items-center">
-          <svg data-p-icon="exclamation-triangle"></svg>
-          <span>جاري التحميل</span>
-        </div>
-      </p-message>
-    } @else if (isCompleted(request())) {
+    @if (isCompleted(request())) {
       <p-message severity="success">
         <div class="flex gap-2 items-center">
           <svg data-p-icon="check-circle"></svg>
@@ -25,44 +18,80 @@
   </ng-template>
 
   <ng-template #contentTpl>
-    @if (loading()) {
-      <div class="flex justify-center p-4">
-        <svg data-p-icon="spinner" [spin]="true" [size]="40"></svg>
+    <div class="flex flex-col gap-1">
+      <span class="font-medium text-shadow-xs text-primary">تفاصيل الموظف(ة):</span>
+      <div
+        class="shadow-md border border-zinc-200 p-2 px-4 rounded-lg grid lg:grid-cols-2 gap-2 justify-between"
+      >
+        <div class="flex items-center gap-1">
+          <svg data-p-icon="graduation-cap" class="text-primary-800"></svg>
+          <span>الاسم:</span>
+          <span class="font-medium">{{ request().employeeName }}</span>
+        </div>
+        <div class="flex items-center gap-1">
+          <svg data-p-icon="building" class="text-primary-800"></svg>
+          <span>الكلية:</span>
+          <span class="font-medium">{{ request().departmentName }}</span>
+        </div>
       </div>
-    } @else {
-      <div class="flex flex-col gap-1">
-        <span class="font-medium text-shadow-xs text-primary">تفاصيل الموظف(ة):</span>
-        @if (staff()) {
+    </div>
+
+    <div class="flex flex-col gap-1">
+      <span class="font-medium text-primary text-shadow-xs">حالة التوقيعات:</span>
+      <div class="flex flex-col gap-2">
+        @for (approval of approvals(); track approval.requestApprovalId) {
           <div
-            class="shadow-md border border-zinc-200 p-2 px-4 rounded-lg grid lg:grid-cols-3 gap-2 justify-between"
+            class="gap-2 shadow-md border border-zinc-200 py-2 px-4 rounded-lg grid lg:grid-cols-2"
+            [ngClass]="{
+              'bg-green-600/10': approval.status === RequestApprovalStatusEnum.APPROVED,
+              'bg-red-600/10': approval.status === RequestApprovalStatusEnum.REJECTED,
+            }"
           >
-            <div class="flex items-center gap-1">
-              <svg data-p-icon="graduation-cap" class="text-primary-800"></svg>
-              <span>الاسم:</span>
-              <span class="font-medium">{{ staff()!.name }}</span>
+            <div class="flex gap-2 items-center">
+              <svg data-p-icon="user" class="text-primary-800"></svg>
+              <span>{{ approval.departmentName }}:</span>
+              <span class="font-medium">{{ approval.staffName }}</span>
             </div>
-            <div class="flex items-center gap-1">
-              <svg data-p-icon="tags" class="text-primary-800"></svg>
-              <span>القسم:</span>
-              <span class="font-medium">{{ staff()!.departmentAlias }}</span>
+
+            @if (approval.decidedAt) {
+              <div class="flex gap-2 items-center">
+                <svg data-p-icon="calendar" class="text-primary-800"></svg>
+                <span>الوقت:</span>
+                <span class="font-medium">
+                  {{ approval.decidedAt.toLocaleDateString() }} -
+                  {{ approval.decidedAt.toLocaleTimeString() }}
+                </span>
+              </div>
+            }
+
+            <div class="flex gap-2 items-center drop-shadow-md">
+              <svg data-p-icon="caret-left" class="text-surface-200 drop-shadow-xs"></svg>
+              <span>الحالة:</span>
+              @if (approval.status === RequestApprovalStatusEnum.APPROVED) {
+                <span class="font-medium">تمت الموافقة</span>
+                <svg data-p-icon="check-circle" class="text-green-800"></svg>
+              } @else if (approval.status === RequestApprovalStatusEnum.REJECTED) {
+                <span class="font-medium">تم الرفض</span>
+                <svg data-p-icon="times-circle" class="text-red-500"></svg>
+              } @else {
+                <span class="font-medium">بانتظار الإجراء</span>
+                <svg data-p-icon="spinner" [spin]="true"></svg>
+              }
             </div>
-            <div class="flex items-center gap-1">
-              <svg data-p-icon="building" class="text-primary-800"></svg>
-              <span>الكلية:</span>
-              <span class="font-medium">{{ staff()!.departmentName }}</span>
-            </div>
+
+            @if (approval.note) {
+              <div class="flex gap-2 items-center">
+                <svg data-p-icon="note-sticky" class="text-primary-800"></svg>
+                ملاحظات: {{ approval.note }}
+              </div>
+            }
           </div>
         }
       </div>
-
-      <div class="flex flex-col gap-1">
-        <span class="font-medium text-primary text-shadow-xs">حالة التوقيعات:</span>
-        <app-approval-list [approvals]="displayApprovals()" />
-      </div>
-    }
+    </div>
   </ng-template>
 
-  @if (!loading() && (isPermittedToTakeAction(request()) || canPrint(request()))) {
+  @if (isPermittedToTakeAction(request()) || canPrint(request())) {
     <ng-template #footerTpl>
       @if (canApprove(request())) {
         <button pButton type="button" (click)="approve($event)" severity="success">

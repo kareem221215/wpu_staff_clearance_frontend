@@ -1,66 +1,68 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { NgClass } from '@angular/common';
+import { Component, computed, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { Building } from '@primeicons/angular/building';
+import { Calendar } from '@primeicons/angular/calendar';
+import { CaretLeft } from '@primeicons/angular/caret-left';
 import { CheckCircle } from '@primeicons/angular/check-circle';
 import { ExclamationTriangle } from '@primeicons/angular/exclamation-triangle';
 import { Folder } from '@primeicons/angular/folder';
 import { GraduationCap } from '@primeicons/angular/graduation-cap';
+import { NoteSticky } from '@primeicons/angular/note-sticky';
 import { Print } from '@primeicons/angular/print';
 import { Spinner } from '@primeicons/angular/spinner';
-import { Tags } from '@primeicons/angular/tags';
 import { TimesCircle } from '@primeicons/angular/times-circle';
+import { User } from '@primeicons/angular/user';
 import { ButtonDirective } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Message } from 'primeng/message';
-import { finalize } from 'rxjs';
 import { DialogContainer } from '../../../../shared/components/dialog-container/dialog-container';
 import { AuthService } from '../../../../shared/services/auth.service';
-import { ApprovalList } from '../../../components/approval-list/approval-list';
-import { StaffHttpService } from '../../../http-services/staff.http-service';
+import { RequestApprovalStatusEnum } from '../../../enums/request-approval-status.enum';
 import { IRequest } from '../../../interfaces/request.interface';
-import { IStaff } from '../../../interfaces/staff.interface';
+import { DepartmentsService } from '../../../services/departments.service';
 import { RequestsService } from '../../../services/requests.service';
 import { deriveApprovals } from '../../../utils/pipeline.utils';
 
 @Component({
   templateUrl: './view.html',
   imports: [
-    ApprovalList,
     Building,
     ButtonDirective,
+    Calendar,
+    CaretLeft,
     CheckCircle,
     DialogContainer,
     ExclamationTriangle,
     Folder,
     GraduationCap,
     Message,
+    NgClass,
+    NoteSticky,
     Print,
     Spinner,
-    Tags,
     TimesCircle,
+    User,
   ],
   styles: ':host { display: contents; }',
 })
-export class RequestView implements OnInit {
+export class RequestView {
   readonly #authService = inject(AuthService);
+  readonly #departmentsService = inject(DepartmentsService);
   readonly #ref = inject(DynamicDialogRef);
   readonly #requestsService = inject(RequestsService);
   readonly #router = inject(Router);
-  readonly #staffHttpService = inject(StaffHttpService);
 
   readonly request = input.required<IRequest>();
 
-  readonly loading = signal(true);
-  readonly staff = signal<IStaff | null>(null);
+  protected readonly RequestApprovalStatusEnum = RequestApprovalStatusEnum;
 
-  readonly displayApprovals = computed(() => deriveApprovals(this.request()));
+  readonly approvals = computed(() => {
+    const request = this.request();
+    const directManagerId = this.#departmentsService.directManagerIdFor(request.departmentId);
 
-  ngOnInit(): void {
-    this.#staffHttpService
-      .fetchById$(this.request().employeeId)
-      .pipe(finalize(() => this.loading.set(false)))
-      .subscribe((staff) => this.staff.set(staff));
-  }
+    return deriveApprovals(request, directManagerId);
+  });
 
   close() {
     this.#ref.close();
