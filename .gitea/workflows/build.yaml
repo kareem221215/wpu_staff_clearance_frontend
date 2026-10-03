@@ -58,5 +58,5 @@ jobs:
             -d \
             --name ${{ gitea.event.repository.name }} \
             --restart unless-stopped \
-            -p 3022:80 \
+            -p 3024:80 \
             ${{ vars.REGISTRY_HOST }}/${{ gitea.repository_owner }}/${{ gitea.event.repository.name }}:latest
