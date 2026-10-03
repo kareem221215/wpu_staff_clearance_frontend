@@ -1,5 +1,5 @@
 import { Location, NgClass } from '@angular/common';
-import { Component, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
+import { Component, computed, inject, OnInit, signal, ViewEncapsulation } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ArrowRight } from '@primeicons/angular/arrow-right';
 import { Print } from '@primeicons/angular/print';
@@ -7,9 +7,9 @@ import { ButtonDirective } from 'primeng/button';
 import { tap } from 'rxjs';
 import { RequestApprovalStatusEnum } from '../../../enums/request-approval-status.enum';
 import { StaffHttpService } from '../../../http-services/staff.http-service';
-import { IRequestApproval } from '../../../interfaces/request-approval.interface';
 import { IRequest } from '../../../interfaces/request.interface';
 import { IStaff } from '../../../interfaces/staff.interface';
+import { DepartmentsService } from '../../../services/departments.service';
 import { deriveApprovals } from '../../../utils/pipeline.utils';
 
 const STATUS_LABEL: Record<RequestApprovalStatusEnum, string> = {
@@ -26,6 +26,7 @@ const STATUS_LABEL: Record<RequestApprovalStatusEnum, string> = {
 })
 export class RequestPrint implements OnInit {
   readonly #activatedRoute = inject(ActivatedRoute);
+  readonly #departmentsService = inject(DepartmentsService);
   readonly #staffHttpService = inject(StaffHttpService);
 
   readonly RequestApprovalStatusEnum = RequestApprovalStatusEnum;
@@ -34,7 +35,15 @@ export class RequestPrint implements OnInit {
   readonly error = signal<string | null>(null);
   readonly request = signal<IRequest | null>(null);
   readonly staff = signal<IStaff | null>(null);
-  readonly approvals = signal<IRequestApproval[]>([]);
+  readonly approvals = computed(() => {
+    const request = this.request();
+
+    if (!request) return [];
+
+    const directManagerId = this.#departmentsService.directManagerIdFor(request.departmentId);
+
+    return deriveApprovals(request, directManagerId).sort((a, b) => a.order - b.order);
+  });
 
   readonly printDate = signal(new Date().toISOString().split('T')[0]);
 
@@ -52,7 +61,6 @@ export class RequestPrint implements OnInit {
     }
 
     this.request.set(request);
-    this.approvals.set([...deriveApprovals(request)].sort((a, b) => a.order - b.order));
 
     this.#staffHttpService
       .fetchById$(request.employeeId)

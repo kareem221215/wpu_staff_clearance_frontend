@@ -5,15 +5,17 @@ import { form } from '@angular/forms/signals';
 import { ActivatedRoute } from '@angular/router';
 import { Send } from '@primeicons/angular/send';
 import { ButtonDirective } from 'primeng/button';
-import { finalize, of, switchMap, tap } from 'rxjs';
+import { finalize, tap } from 'rxjs';
 import { IHttpListResponse } from '../../../../shared/interfaces/http-list-response.interface';
 import { AuthService } from '../../../../shared/services/auth.service';
 import { ApprovalList } from '../../../components/approval-list/approval-list';
 import { RequestApprovalStatusEnum } from '../../../enums/request-approval-status.enum';
 import { RequestsHttpService } from '../../../http-services/requests.http-service';
 import { StaffHttpService } from '../../../http-services/staff.http-service';
+import { IRequest } from '../../../interfaces/request.interface';
 import { IRequestApproval } from '../../../interfaces/request-approval.interface';
 import { IStaff } from '../../../interfaces/staff.interface';
+import { DepartmentsService } from '../../../services/departments.service';
 import { RequestsService } from '../../../services/requests.service';
 import { ShellService } from '../../../services/shell.service';
 import { deriveApprovals } from '../../../utils/pipeline.utils';
@@ -26,6 +28,7 @@ import { deriveApprovals } from '../../../utils/pipeline.utils';
 export class StaffList implements OnInit {
   readonly #activatedRoute = inject(ActivatedRoute);
   readonly #authService = inject(AuthService);
+  readonly #departmentsService = inject(DepartmentsService);
   readonly #requestsHttpService = inject(RequestsHttpService);
   readonly #requestsService = inject(RequestsService);
   readonly #shellService = inject(ShellService);
@@ -33,7 +36,7 @@ export class StaffList implements OnInit {
 
   readonly toolbarTpl = viewChild<TemplateRef<void>>('toolbarTpl');
 
-  readonly approvals = signal<IRequestApproval[]>([]);
+  readonly myRequest = signal<IRequest | null>(null);
   readonly creating = signal(false);
   readonly loading = signal(true);
   readonly staff = signal<IHttpListResponse<IStaff>>({ data: [], total: 0 });
@@ -52,10 +55,12 @@ export class StaffList implements OnInit {
   readonly searchForm = form(this.searchModel);
 
   readonly displayApprovals = computed<IRequestApproval[]>(() => {
-    const approvals = this.approvals();
+    const request = this.myRequest();
 
-    if (approvals.length > 0) {
-      return [...approvals].sort((a, b) => a.order - b.order);
+    if (request) {
+      const directManagerId = this.#departmentsService.directManagerIdFor(request.departmentId);
+
+      return deriveApprovals(request, directManagerId).sort((a, b) => a.order - b.order);
     }
 
     return this.staff().data.map((manager, index) => ({
@@ -143,16 +148,7 @@ export class StaffList implements OnInit {
 
     this.#requestsHttpService
       .fetch$({ employeeIds: [employeeId], take: 1 })
-      .pipe(
-        switchMap(({ data }) => {
-          const request = data[0];
-
-          if (!request) return of([]);
-
-          return of(deriveApprovals(request));
-        }),
-        tap((approvals) => this.approvals.set(approvals)),
-      )
+      .pipe(tap(({ data }) => this.myRequest.set(data[0] ?? null)))
       .subscribe();
   }
 }
