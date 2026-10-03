@@ -11,13 +11,9 @@ export class RootRedirect implements OnInit {
   readonly #router = inject(Router);
 
   ngOnInit(): void {
-    const payload = this.#authService.accessTokenPayload;
-    const isDepartmentStaff =
-      this.#authService.isStaff && !(this.#authService.accessTokenPayload?.roles?.length);
-
-    if (isDepartmentStaff) {
+    if (!this.#authService.canSeeAllTabs) {
       this.#router.navigate(['/clearance'], {
-        queryParams: { staffId: payload!.sub },
+        queryParams: { staffId: this.#authService.staffId },
         replaceUrl: true,
       });
     } else {

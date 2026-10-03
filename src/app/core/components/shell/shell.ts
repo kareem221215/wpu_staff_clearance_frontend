@@ -35,7 +35,7 @@ export class Shell {
     return this.#authService.hasRoles([UserRoleEnum.ADMIN]);
   }
 
-  isDepartmentStaff() {
-    return this.#authService.isStaff && !(this.#authService.accessTokenPayload?.roles?.length);
+  canSeeAllTabs() {
+    return this.#authService.canSeeAllTabs;
   }
 }

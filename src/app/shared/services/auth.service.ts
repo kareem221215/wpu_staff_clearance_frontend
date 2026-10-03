@@ -14,6 +14,13 @@ export class AuthService {
 
   readonly adminRoles = Object.freeze([UserRoleEnum.ADMIN, UserRoleEnum.HR_STAFF]);
   readonly superAdminRoles = Object.freeze([UserRoleEnum.ADMIN]);
+  // Users whose roles are all in this list (or who have no roles) only get the clearance page.
+  readonly clearanceOnlyRoles = Object.freeze([
+    UserRoleEnum.ACCOUNTING_STUDENT_STAFF,
+    UserRoleEnum.AFFAIRS_COLLEGE_STAFF,
+    UserRoleEnum.COLLEGE_LAB_SUPERVISOR,
+    UserRoleEnum.COLLEGE_LIB_SUPERVISOR,
+  ]);
 
   get accessToken() {
     return this.#accessToken$.value;
@@ -45,6 +52,12 @@ export class AuthService {
         return this.#hasRoles(accessTokenPayload, this.superAdminRoles);
       }),
     );
+  }
+
+  get canSeeAllTabs() {
+    const roles = this.accessTokenPayload?.roles ?? [];
+
+    return roles.some((role) => !this.clearanceOnlyRoles.includes(role));
   }
 
   get isStaff() {

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { canSeeAllTabsGuard } from './shared/guards/can-see-all-tabs.guard';
 import { canSeeDecisionsGuard } from './shared/guards/can-see-decisions.guard';
 import { authGuard } from './shared/guards/auth.guard';
 
@@ -26,6 +27,7 @@ export const routes: Routes = [
       // },
       {
         path: 'request',
+        canActivate: [canSeeAllTabsGuard],
         children: [
           {
             path: 'list',
@@ -36,6 +38,7 @@ export const routes: Routes = [
       },
       {
         path: 'stats',
+        canActivate: [canSeeAllTabsGuard],
         loadComponent: () => import('./core/features/stats/stats').then((c) => c.Stats),
       },
     ],
