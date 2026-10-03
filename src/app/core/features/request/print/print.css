@@ -1,4 +1,4 @@
-/* @reference "../../../../../styles.css";
+@reference "../../../../../styles.css";
 
 .loading,
 .error-screen {
@@ -170,4 +170,4 @@
     padding: 60mm 15mm 20mm;
     margin-top: 0;
   }
-} */
+}
