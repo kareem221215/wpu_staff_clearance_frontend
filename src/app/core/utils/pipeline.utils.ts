@@ -27,8 +27,7 @@ export function deriveApprovals(request: IRequest): IRequestApproval[] {
 
   const nonArchiveActions = request.actions.filter((a) => a.type !== RequestActionTypeEnum.ARCHIVE);
 
-  const dmAction = nonArchiveActions.find((a) => !PIPELINE_ORDER.includes(a.role));
-  const pipelineActions = nonArchiveActions.filter((a) => a !== dmAction);
+  const dmAction = nonArchiveActions.filter((a) => !PIPELINE_ORDER.includes(a.role)).at(-1);
 
   let dmStatus: RequestApprovalStatusEnum;
   if (dmAction?.type === RequestActionTypeEnum.APPROVE) {
@@ -52,7 +51,7 @@ export function deriveApprovals(request: IRequest): IRequestApproval[] {
   };
 
   const pipelineSteps = PIPELINE_ORDER.map((role, index) => {
-    const action = pipelineActions.find((a) => a.role === role);
+    const action = nonArchiveActions.filter((a) => a.role === role).at(-1);
 
     let status: RequestApprovalStatusEnum;
     if (action?.type === RequestActionTypeEnum.APPROVE) {
