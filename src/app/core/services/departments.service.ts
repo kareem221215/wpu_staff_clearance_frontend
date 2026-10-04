@@ -13,10 +13,6 @@ export class DepartmentsService {
     { initialValue: [] },
   );
 
-  // The role whose holder is this department's direct manager. Matched by
-  // role (not a specific person's id) since that's how actions are recorded
-  // and how turn-taking (nextActionRole) already works everywhere else —
-  // matching by id would silently break as soon as the direct manager changes.
   directManagerRoleFor(departmentId: number): UserRoleEnum | null {
     return (
       this.#departments().find((department) => department.departmentId === departmentId)

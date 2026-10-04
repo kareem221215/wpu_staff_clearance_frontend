@@ -27,10 +27,6 @@ export function deriveApprovals(request: IRequest): IRequestApproval[] {
 
   const nonArchiveActions = request.actions.filter((a) => a.type !== RequestActionTypeEnum.ARCHIVE);
 
-  // The 6 pipeline roles are a small, fixed, known set — any action whose
-  // role isn't one of them has to be the direct manager's, since the direct
-  // manager's role is the one thing that varies per department. No separate
-  // department/role lookup needed.
   const dmAction = nonArchiveActions.find((a) => !PIPELINE_ORDER.includes(a.role));
   const pipelineActions = nonArchiveActions.filter((a) => a !== dmAction);
 
