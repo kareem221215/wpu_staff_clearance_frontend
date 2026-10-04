@@ -8,7 +8,7 @@
         <span>طلب براءة ذمة </span>
       </a>
 
-      @if (!isDepartmentStaff()) {
+      @if (canSeeManagementTabs()) {
         <a
           pButton
           routerLink="/request/list"

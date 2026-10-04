@@ -22,15 +22,16 @@ export const ROLE_LABEL: Record<string, string> = {
   [UserRoleEnum.HR_STAFF]: 'الموارد البشرية',
 };
 
-export function deriveApprovals(
-  request: IRequest,
-  directManagerId: number | null = null,
-): IRequestApproval[] {
+export function deriveApprovals(request: IRequest): IRequestApproval[] {
   const DIRECT_MANAGER_LABEL = 'المدير المباشر';
 
   const nonArchiveActions = request.actions.filter((a) => a.type !== RequestActionTypeEnum.ARCHIVE);
 
-  const dmAction = nonArchiveActions.find((a) => a.takenById === directManagerId);
+  // The 6 pipeline roles are a small, fixed, known set — any action whose
+  // role isn't one of them has to be the direct manager's, since the direct
+  // manager's role is the one thing that varies per department. No separate
+  // department/role lookup needed.
+  const dmAction = nonArchiveActions.find((a) => !PIPELINE_ORDER.includes(a.role));
   const pipelineActions = nonArchiveActions.filter((a) => a !== dmAction);
 
   let dmStatus: RequestApprovalStatusEnum;

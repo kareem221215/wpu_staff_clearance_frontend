@@ -8,6 +8,7 @@ import { List } from '@primeicons/angular/list';
 import { Users } from '@primeicons/angular/users';
 import { ButtonDirective } from 'primeng/button';
 import { UserRoleEnum } from '../../../shared/enums/user-role.enum';
+import { MANAGEMENT_ROLES } from '../../../shared/constants/staff-roles.constant';
 import { AuthService } from '../../../shared/services/auth.service';
 import { ShellService } from '../../services/shell.service';
 
@@ -35,7 +36,7 @@ export class Shell {
     return this.#authService.hasRoles([UserRoleEnum.ADMIN]);
   }
 
-  isDepartmentStaff() {
-    return this.#authService.isStaff && !(this.#authService.accessTokenPayload?.roles?.length);
+  canSeeManagementTabs() {
+    return this.#authService.hasRoles(MANAGEMENT_ROLES);
   }
 }

@@ -20,7 +20,6 @@ import { DialogContainer } from '../../../../shared/components/dialog-container/
 import { AuthService } from '../../../../shared/services/auth.service';
 import { RequestApprovalStatusEnum } from '../../../enums/request-approval-status.enum';
 import { IRequest } from '../../../interfaces/request.interface';
-import { DepartmentsService } from '../../../services/departments.service';
 import { RequestsService } from '../../../services/requests.service';
 import { deriveApprovals } from '../../../utils/pipeline.utils';
 
@@ -48,7 +47,6 @@ import { deriveApprovals } from '../../../utils/pipeline.utils';
 })
 export class RequestView {
   readonly #authService = inject(AuthService);
-  readonly #departmentsService = inject(DepartmentsService);
   readonly #ref = inject(DynamicDialogRef);
   readonly #requestsService = inject(RequestsService);
   readonly #router = inject(Router);
@@ -57,12 +55,11 @@ export class RequestView {
 
   protected readonly RequestApprovalStatusEnum = RequestApprovalStatusEnum;
 
-  readonly approvals = computed(() => {
-    const request = this.request();
-    const directManagerId = this.#departmentsService.directManagerIdFor(request.departmentId);
-
-    return deriveApprovals(request, directManagerId);
-  });
+  readonly approvals = computed(() =>
+    deriveApprovals(this.request()).filter(
+      (approval) => approval.status !== RequestApprovalStatusEnum.PENDING,
+    ),
+  );
 
   close() {
     this.#ref.close();

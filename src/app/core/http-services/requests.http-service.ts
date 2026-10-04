@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { IHttpFetchPayload } from '../../shared/interfaces/http-fetch-payload.interface';
 import { IHttpListResponse } from '../../shared/interfaces/http-list-response.interface';
+import { IHttpResponse } from '../../shared/interfaces/http-response.interface';
 import { HttpService } from '../../shared/services/http.service';
 import { STAFF_CLEARANCE_APIS_SERVICE_URL_TOKEN } from '../../shared/tokens/staff-clearance-apis-service-url.token';
 import { IRequest } from '../interfaces/request.interface';
@@ -31,6 +32,15 @@ export class RequestsHttpService {
     return this.#httpClient.get<IHttpListResponse<IRequest>>(this.#baseUrl, {
       params,
     });
+  }
+
+  // Backend's GET /requests/:requestId is still a work in progress (the
+  // self-service "my own request" lookup is blocked by a role guard — see
+  // StaffList) — used for the requestId:1 hardcode until that's resolved.
+  fetchById$(requestId: number) {
+    const url = [this.#baseUrl, requestId].join('/');
+
+    return this.#httpClient.get<IHttpResponse<IRequest>>(url);
   }
 
   takeAction$(requestId: number, type: RequestActionTypeEnum, note: string | null = null) {

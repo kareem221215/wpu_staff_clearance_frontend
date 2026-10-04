@@ -167,7 +167,6 @@
 
   .print-area {
     @apply w-full m-0 min-h-0 shadow-none;
-    padding: 60mm 15mm 20mm;
     margin-top: 0;
   }
 }

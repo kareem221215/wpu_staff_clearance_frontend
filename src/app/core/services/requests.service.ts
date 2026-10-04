@@ -103,7 +103,7 @@ export class RequestsService {
   }
 
   canApprove(request: IRequest) {
-    return this.#isMyTurn(request);
+    return this.#isMyTurn(request) || (this.#isRejectedByMe(request) && !this.#isApprovedByMe(request));
   }
 
   canReject(request: IRequest) {
@@ -134,12 +134,37 @@ export class RequestsService {
   }
 
   isCompleted(request: IRequest) {
-    return request.nextActionRole === null;
+    return (
+      request.nextActionRole === null &&
+      this.#getRejectionRoles(request).every((role) =>
+        this.#getApprovalRoles(request).includes(role),
+      )
+    );
+  }
+
+  #isRejectedByMe(request: IRequest) {
+    return this.#authService.hasRoles(this.#getRejectionRoles(request));
+  }
+
+  #isApprovedByMe(request: IRequest) {
+    return this.#authService.hasRoles(this.#getApprovalRoles(request));
   }
 
   #isMyTurn({ nextActionRole }: IRequest) {
     if (!nextActionRole) return false;
 
     return this.#authService.hasRoles([nextActionRole]);
+  }
+
+  #getApprovalRoles(request: IRequest) {
+    return request.actions
+      .filter((action) => action.type === RequestActionTypeEnum.APPROVE)
+      .map(({ role }) => role);
+  }
+
+  #getRejectionRoles(request: IRequest) {
+    return request.actions
+      .filter((action) => action.type === RequestActionTypeEnum.REJECT)
+      .map(({ role }) => role);
   }
 }

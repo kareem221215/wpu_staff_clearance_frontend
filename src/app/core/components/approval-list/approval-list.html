@@ -37,22 +37,22 @@
 
       <td class="text-center">
         @if (approval.status === RequestApprovalStatusEnum.APPROVED) {
-          <span class="text-green-700 font-medium">تمت الموافقة</span>
+          <div class="flex items-center justify-center gap-1">
+            <svg data-p-icon="check" class="text-green-700" [size]="18"></svg>
+            <span class="text-green-700 font-medium">تمت الموافقة</span>
+          </div>
         } @else if (approval.status === RequestApprovalStatusEnum.REJECTED) {
           <div class="flex items-center justify-center gap-1">
-            <span class="text-red-600 font-medium">تم الرفض</span>
             @if (approval.note) {
-              <button
-                type="button"
-                class="cursor-pointer text-zinc-500 hover:text-zinc-700"
-                (click)="notePopover.toggle($event)"
-              >
-                <svg data-p-icon="info-circle" [size]="18"></svg>
-              </button>
-              <p-popover #notePopover>
-                <div class="max-w-60 text-sm">{{ approval.note }}</div>
-              </p-popover>
+              <svg
+                data-p-icon="info-circle"
+                class="text-zinc-500 cursor-help"
+                [size]="18"
+                [pTooltip]="approval.note"
+                tooltipPosition="top"
+              ></svg>
             }
+            <span class="text-red-600 font-medium">تم الرفض</span>
           </div>
         } @else {
           <div class="flex items-center justify-center">

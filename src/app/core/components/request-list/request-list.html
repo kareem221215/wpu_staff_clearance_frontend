@@ -85,48 +85,33 @@
           عرض
         </button>
 
-        <button
-          (click)="canApprove(request) && approve($event, request)"
-          [disabled]="!canApprove(request)"
-          severity="success"
-          size="small"
-          pButton
-        >
-          <svg data-p-icon="check-circle"></svg>
-          موافقة
-        </button>
+        @if (canApprove(request)) {
+          <button (click)="approve($event, request)" severity="success" size="small" pButton>
+            <svg data-p-icon="check-circle"></svg>
+            موافقة
+          </button>
+        }
 
-        <button
-          (click)="canReject(request) && reject(request)"
-          [disabled]="!canReject(request)"
-          severity="danger"
-          size="small"
-          pButton
-        >
-          <svg data-p-icon="times-circle"></svg>
-          رفض
-        </button>
+        @if (canReject(request)) {
+          <button (click)="reject(request)" severity="danger" size="small" pButton>
+            <svg data-p-icon="times-circle"></svg>
+            رفض
+          </button>
+        }
 
-        <button
-          (click)="canArchive(request) && archive($event, request)"
-          [disabled]="!canArchive(request)"
-          severity="secondary"
-          size="small"
-          pButton
-        >
-          <svg data-p-icon="folder"></svg>
-          أرشفة
-        </button>
+        @if (canArchive(request)) {
+          <button (click)="archive($event, request)" severity="secondary" size="small" pButton>
+            <svg data-p-icon="folder"></svg>
+            أرشفة
+          </button>
+        }
 
-        <button
-          pButton
-          size="small"
-          [disabled]="!canPrint(request)"
-          (click)="canPrint(request) && navigateToPrint(request)"
-        >
-          <svg data-p-icon="print"></svg>
-          طباعة
-        </button>
+        @if (canPrint(request)) {
+          <button pButton size="small" (click)="navigateToPrint(request)">
+            <svg data-p-icon="print"></svg>
+            طباعة
+          </button>
+        }
       </td>
     </tr>
   </ng-template>
