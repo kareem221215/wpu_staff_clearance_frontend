@@ -13,16 +13,10 @@ export class RootRedirect implements OnInit {
   readonly #router = inject(Router);
 
   ngOnInit(): void {
-    const payload = this.#authService.accessTokenPayload;
     const canSeeManagementTabs = this.#authService.hasRoles(MANAGEMENT_ROLES);
 
-    if (canSeeManagementTabs) {
-      this.#router.navigate(['/request/list'], { replaceUrl: true });
-    } else {
-      this.#router.navigate(['/clearance'], {
-        queryParams: { staffId: payload!.sub },
-        replaceUrl: true,
-      });
-    }
+    this.#router.navigate([canSeeManagementTabs ? '/request/list' : '/clearance'], {
+      replaceUrl: true,
+    });
   }
 }

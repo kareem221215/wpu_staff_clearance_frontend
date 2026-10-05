@@ -1,0 +1,57 @@
+<ng-template #toolbarTpl>
+  @if (canCreate()) {
+    <button
+      (click)="create()"
+      [disabled]="creating()"
+      [loading]="creating()"
+      pButton
+      severity="secondary"
+      size="small"
+    >
+      <svg data-p-icon="send"></svg>
+      انشاء طلب
+    </button>
+  }
+</ng-template>
+
+<div class="flex flex-col gap-6 px-4 w-full max-w-4xl mx-auto">
+  @if (requestResource.isLoading()) {
+    <div class="flex justify-center">
+      <svg data-p-icon="spinner" [spin]="true" [size]="32" class="text-primary"></svg>
+    </div>
+  } @else if (requestResource.error()) {
+    <p-message severity="error">حدث خطأ أثناء تحميل طلب براءة الذمة</p-message>
+  } @else if (requestResource.value()) {
+    <div class="flex gap-4 items-center">
+      <h2 class="text-xl font-bold leading-snug">
+        طلب براءة الذمة #{{ requestResource.value()!.requestId }}
+      </h2>
+
+      @if (isCompleted()) {
+        <p-message severity="success">
+          <div class="flex gap-2 items-center">
+            <svg data-p-icon="check-circle"></svg>
+            <span>تم اتخاذ جميع الاجراءات</span>
+          </div>
+        </p-message>
+      } @else {
+        <p-message severity="warn">
+          <div class="flex gap-2 items-center">
+            <svg data-p-icon="exclamation-triangle"></svg>
+            <span>بانتظار استكمال الإجراءات </span>
+          </div>
+        </p-message>
+      }
+    </div>
+
+    <app-request-view [requestResource]="requestResource" />
+
+    @if (!requestResource.value()!.actions.length) {
+      <span class="text-surface-500">لم يتم اتخاذ أي إجراء على الطلب بعد.</span>
+    }
+  } @else {
+    <p-message severity="info">
+      لا يوجد لديك طلب براءة ذمة حالياً. يمكنك إنشاء طلب جديد من زر "انشاء طلب".
+    </p-message>
+  }
+</div>

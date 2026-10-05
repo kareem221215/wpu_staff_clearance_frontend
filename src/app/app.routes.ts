@@ -15,6 +15,11 @@ export const routes: Routes = [
           import('./core/components/root-redirect/root-redirect').then((c) => c.RootRedirect),
       },
       {
+        path: 'clearance',
+        loadComponent: () =>
+          import('./core/features/clearance/clearance').then((c) => c.Clearance),
+      },
+      {
         path: 'request',
         children: [
           {
@@ -31,8 +36,7 @@ export const routes: Routes = [
     ],
   },
   {
-    // Standalone (no Shell/nav chrome around it) so the printed page only ever
-    // contains the clearance form itself.
+
     path: 'request/print/:requestId',
     canActivate: [authGuard(true)],
     loadComponent: () => import('./core/features/request/print/print').then((c) => c.RequestPrint),
