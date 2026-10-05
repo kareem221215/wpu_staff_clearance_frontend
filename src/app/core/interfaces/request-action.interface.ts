@@ -6,7 +6,7 @@ export interface IRequestAction {
   readonly requestActionId: number;
   readonly requestId: number;
   readonly role: UserRoleEnum;
-  readonly takenAt: string;
+  readonly takenAt: Date;
   readonly takenById: number;
   readonly takenByName: string;
   readonly type: RequestActionTypeEnum;

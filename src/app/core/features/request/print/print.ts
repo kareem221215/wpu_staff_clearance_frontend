@@ -23,6 +23,7 @@ const STATUS_LABEL: Record<RequestApprovalStatusEnum, string> = {
   styleUrl: './print.css',
   encapsulation: ViewEncapsulation.None,
   imports: [ButtonDirective, NgClass, Print, ArrowRight],
+  selector: 'app-request-print',
 })
 export class RequestPrint implements OnInit {
   readonly #activatedRoute = inject(ActivatedRoute);

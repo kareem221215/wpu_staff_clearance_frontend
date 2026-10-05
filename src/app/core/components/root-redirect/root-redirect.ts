@@ -3,6 +3,7 @@ import { Spinner } from '@primeicons/angular/spinner';
 import { AuthService } from '../../../shared/services/auth.service';
 import { Router } from '@angular/router';
 import { MANAGEMENT_ROLES } from '../../../shared/constants/staff-roles.constant';
+
 @Component({
   templateUrl: './root-redirect.html',
   imports: [Spinner],

@@ -20,6 +20,7 @@ import { IRequest } from '../../../interfaces/request.interface';
     TimesCircle,
   ],
   styles: ':host { display: contents; }',
+  selector: 'app-request-reject-dialog',
 })
 export class RequestReject {
   readonly #ref = inject(DynamicDialogRef);

@@ -5,6 +5,7 @@ import { SignIn } from '@primeicons/angular/sign-in';
 import { GATE_FRONTEND_SERVICE_URL_TOKEN } from '../../../shared/tokens/gate-frontend-service-url.token';
 
 @Component({
+  selector: 'app-login',
   templateUrl: './login.html',
   imports: [Card, ButtonDirective, SignIn],
 })

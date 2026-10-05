@@ -13,6 +13,7 @@ import { AuthService } from '../../../shared/services/auth.service';
 import { ShellService } from '../../services/shell.service';
 
 @Component({
+  selector: 'app-shell',
   templateUrl: './shell.html',
   imports: [
     ButtonDirective,

@@ -15,6 +15,7 @@ import { ShellService } from '../../services/shell.service';
   templateUrl: './stats.html',
   imports: [NgTemplateOutlet, RouterLink, Spinner, File, Ban, Folder],
   styleUrl: './stats.css',
+  selector: 'app-stats',
 })
 export class Stats {
   readonly #authService = inject(AuthService);

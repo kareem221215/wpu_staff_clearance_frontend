@@ -1,0 +1,78 @@
+@let res = requestResource();
+
+@if (res.isLoading()) {
+  <!-- Show some preloader -->
+} @else if (res.hasValue()) {
+  @let request = res.value();
+
+  <div class="flex flex-col gap-1">
+    <span class="font-medium text-shadow-xs text-primary">تفاصيل الموظف(ة):</span>
+    <div
+      class="shadow-md border border-zinc-200 p-2 px-4 rounded-lg grid lg:grid-cols-2 gap-2 justify-between"
+    >
+      <div class="flex items-center gap-1">
+        <svg data-p-icon="graduation-cap" class="text-primary-800"></svg>
+        <span>الاسم:</span>
+        <span class="font-medium">{{ request.employeeName }}</span>
+      </div>
+      <div class="flex items-center gap-1">
+        <svg data-p-icon="building" class="text-primary-800"></svg>
+        <span>القسم:</span>
+        <span class="font-medium">{{ request.departmentName }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-1">
+    <span class="font-medium text-primary text-shadow-xs">الإجراءات:</span>
+    <div class="flex flex-col gap-2">
+      @for (action of request.actions; track action.requestActionId) {
+        <div
+          class="gap-2 shadow-md border border-zinc-200 py-2 px-4 rounded-lg grid lg:grid-cols-2"
+          [ngClass]="{
+            'bg-green-600/10': isActionApproved(action),
+            'bg-red-600/10': isActionRejected(action),
+          }"
+        >
+          <div class="flex gap-2 items-center">
+            <svg data-p-icon="user" class="text-primary-800"></svg>
+            <span class="font-medium">{{ action.takenByName }}</span>
+          </div>
+
+          <div class="flex gap-2 items-center">
+            <svg data-p-icon="calendar" class="text-primary-800"></svg>
+            <span>الوقت:</span>
+            <span class="font-medium">
+              {{ action.takenAt.toLocaleDateString() }} -
+              {{ action.takenAt.toLocaleTimeString() }}
+            </span>
+          </div>
+
+          <div class="flex gap-2 items-center drop-shadow-md">
+            <svg data-p-icon="caret-left" class="text-surface-200 drop-shadow-xs"></svg>
+            <span>الحالة:</span>
+            @if (isActionApproved(action)) {
+              <span class="font-medium">تمت الموافقة</span>
+              <svg data-p-icon="check-circle" class="text-green-800"></svg>
+            } @else if (isActionRejected(action)) {
+              <span class="font-medium">تم الرفض</span>
+              <svg data-p-icon="times-circle" class="text-red-500"></svg>
+            } @else {
+              <span class="font-medium">تمت الأرشفة</span>
+              <svg data-p-icon="folder"></svg>
+            }
+          </div>
+
+          @if (action.note) {
+            <div class="flex gap-2 items-center">
+              <svg data-p-icon="note-sticky" class="text-primary-800"></svg>
+              ملاحظات: {{ action.note }}
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+} @else {
+  <!-- Show an error message or placeholder -->
+}

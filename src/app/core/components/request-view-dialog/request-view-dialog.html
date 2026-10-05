@@ -1,0 +1,34 @@
+<app-dialog-container [title]="title()" (close)="close()">
+  <ng-template #headerTpl>
+    @if (requestResource.hasValue()) {
+      @if (isCompleted()) {
+        <p-message severity="success">
+          <div class="flex gap-2 items-center">
+            <svg data-p-icon="check-circle"></svg>
+            <span>تم اتخاذ جميع الاجراءات</span>
+          </div>
+        </p-message>
+      } @else {
+        <p-message severity="warn">
+          <div class="flex gap-2 items-center">
+            <svg data-p-icon="exclamation-triangle"></svg>
+            <span>بانتظار استكمال الإجراءات </span>
+          </div>
+        </p-message>
+      }
+    }
+  </ng-template>
+
+  <ng-template #contentTpl>
+    <app-request-view [requestResource]="requestResource" />
+  </ng-template>
+
+  @if (canTakeAction()) {
+    <ng-template #footerTpl>
+      <app-approve-button [request]="requestResource.value()!" (onApprove)="onAction($event)" />
+      <app-reject-button [request]="requestResource.value()!" (onReject)="onAction($event)" />
+      <app-archive-button [request]="requestResource.value()!" (onArchive)="onAction($event)" />
+      <app-print-button [request]="requestResource.value()!" />
+    </ng-template>
+  }
+</app-dialog-container>

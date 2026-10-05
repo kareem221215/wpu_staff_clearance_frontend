@@ -1,0 +1,6 @@
+@if (canPrint()) {
+  <a pButton [routerLink]="['/request/print', request().requestId]">
+    <svg data-p-icon="print"></svg>
+    طباعة
+  </a>
+}

@@ -15,16 +15,6 @@ export const routes: Routes = [
           import('./core/components/root-redirect/root-redirect').then((c) => c.RootRedirect),
       },
       {
-        path: 'clearance',
-        loadComponent: () => import('./core/features/staff/list/list').then((c) => c.StaffList),
-      },
-      // {
-      //   path: 'decisions',
-      //   canActivate: [canSeeDecisionsGuard],
-      //   loadComponent: () =>
-      //     import('./core/features/decision/list/list').then((c) => c.DecisionList),
-      // },
-      {
         path: 'request',
         children: [
           {
